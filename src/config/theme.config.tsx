@@ -7,7 +7,7 @@ type ThemeProps = {
 
 enum themePalette {
     BG = '#053545',
-    LIME = '#C8FA5F',
+    CRUNCHY = '#f47521',
     FONT_GLOBAL = 'Roboto',
 }
 
@@ -18,7 +18,7 @@ const theme = createTheme({
             default: themePalette.BG,
         },
         primary: {
-            main: themePalette.LIME,
+            main: themePalette.CRUNCHY,
         },
     },
 
