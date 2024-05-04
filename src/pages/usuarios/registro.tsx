@@ -1,10 +1,10 @@
 import React from 'react';
 import { useFormik } from 'formik';
-import { Box, Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
-import { registro } from '../../api/usuarios';
+import { Box, Button, Container, Grid, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { registro, login } from '../../api/usuarios';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/notification.context';
-import { RegistroValidate } from '../../utils/validateForm';
+import { RegistroValidate } from '../../utils/usuariosForm';
 
 type RegistroType = {
     username: string;
@@ -31,13 +31,11 @@ export const RegistroPage: React.FC<{}> = () => {
         },
         validationSchema: RegistroValidate,
         onSubmit: async (values: RegistroType) => {
-            // borra el consol log
-
-            console.log("Formulario enviado con los siguientes valores:", values);
             try {
                 await registro(values.username, values.firstName, values.lastName, values.email, values.celular, values.password);
                 getSuccess('Registro exitoso');
-                navigate('login');
+                await login(values.username, values.password);
+                navigate('/registro_empresa');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {
                     getError('No se está pudiendo establecer conexión');
@@ -112,6 +110,9 @@ export const RegistroPage: React.FC<{}> = () => {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.celular && Boolean(formik.errors.celular)}
                                 helperText={formik.touched.celular && formik.errors.celular}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">+</InputAdornment>,
+                                }}
                             />
                             <TextField name="password"
                                 margin="normal"

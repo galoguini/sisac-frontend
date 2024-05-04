@@ -1,9 +1,11 @@
-import { AppBar, Box, Button, Container, Grid, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Container, Grid, Stack, Toolbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAuth, logout } from '../api/usuarios';
+import { useNotification } from "../context/notification.context";
 
 export const NavBar: React.FC<{}> = () => {
+    const { getSuccess, getError } = useNotification();
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -16,20 +18,24 @@ export const NavBar: React.FC<{}> = () => {
         try {
             await logout();
             setIsAuthenticated(false);
+            getSuccess('Sesión cerrada con éxito');
             navigate('/');
         } catch (error) {
-            console.error('Error during logout:', error);
+            getError('Error al cerrar sesión');
         }
     };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="sticky">
+            <AppBar position="fixed">
                 <Toolbar>
                     <Container maxWidth="xl">
                         <Grid container direction="row" justifyContent="space-between" alignItems="center">
                             <Grid item>
-                                <Typography>SIBAC</Typography>
+                                <Stack direction="row" spacing={2}>
+                                    {/* <Typography>SIBAC</Typography> */}
+                                    <Button variant="text" onClick={() => navigate("/")}>Home</Button>
+                                </Stack>
                             </Grid>
                             <Grid item>
                                 <Stack direction="row" spacing={2}>
@@ -39,7 +45,10 @@ export const NavBar: React.FC<{}> = () => {
                                             <Button variant="outlined" onClick={() => navigate("registro")}>Registro</Button>
                                         </>
                                     ) : (
-                                        <Button variant="contained" onClick={handleLogout}>Logout</Button>
+                                        <>
+                                        <Button variant="contained" onClick={() => navigate("perfil")}>Perfil</Button>
+                                        <Button variant="text" onClick={handleLogout}>Logout</Button>
+                                        </>
                                     )}
                                 </Stack>
                             </Grid>

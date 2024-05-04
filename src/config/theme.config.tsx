@@ -44,25 +44,14 @@ const theme = createTheme({
         MuiAlert: {
             defaultProps: {
                 variant: "filled",
-                // style: {
-                //     borderRadius: "0.8em",
-                //     fontSize: "1em"
-                // },
             },
-            // styleOverrides: {
-            //     root: {
-            //         backgroundColor: themePalette.BG_ALERT,
-            //         color: themePalette.FONT_COLOR,
-            //         border: `5px solid ${themePalette.ERROR_MAIN}`,
-            //     }
-            // }
-            // styleOverrides: {
-            //     standardError: {
-            //         border: "1px solid ${themePalette.ERROR_MAIN}",
-            //         background: themePalette.BG_ERROR_MAIN,
-            //     },
-            // },
-        },
+            styleOverrides: {
+                root: {
+                    borderRadius: "0.8em",
+                    fontSize: "4em",
+                },
+            },
+        }
     },
 });
 

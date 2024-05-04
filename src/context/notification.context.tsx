@@ -5,6 +5,8 @@ import { Notification } from "../components";
 type ContextProps = {
     getError: (msg: string) => void
     getSuccess: (msg: string) => void
+    getInfo: (msg: string) => void
+    getWarning: (msg: string) => void
 }
 
 const NotificationContext = React.createContext<ContextProps | null>(null);
@@ -30,9 +32,23 @@ export const NotificationProvider: React.FC<{ children: JSX.Element }> = ({ chil
         setMsg(msg)
     };
 
+    const getInfo = (msg: string) => {
+        setSeverity("info")
+        setOpen(true)
+        setMsg(msg)
+    };
+
+    const getWarning = (msg: string) => {
+        setSeverity("warning")
+        setOpen(true)
+        setMsg(msg)
+    };
+
     const value = {
         getError,
         getSuccess,
+        getInfo,
+        getWarning,
     }
 
     return (

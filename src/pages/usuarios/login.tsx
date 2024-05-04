@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Container, Grid, Paper, TextField, Typography } from "@mui/material";
 import { useNotification } from "../../context/notification.context";
-import { LoginValidate } from "../../utils/validateForm";
+import { LoginValidate } from "../../utils/usuariosForm";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { login } from '../../api/usuarios'; 
