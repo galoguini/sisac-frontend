@@ -92,9 +92,6 @@ export const PerfilPage: React.FC<{}> = () => {
                             <Typography variant="h5" gutterBottom>
                                 Datos del Usuario
                             </Typography>
-                            <Button variant="contained" onClick={() => navigate("/empresa")}>
-                                Ver datos de mi empresa
-                            </Button>
                             <FormGroup>
                                 <FormControlLabel
                                     control={

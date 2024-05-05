@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
-import { Box, Button, Container, Grid, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, InputAdornment, Link, Paper, TextField, Typography } from '@mui/material';
 import { registro, login } from '../../api/usuarios';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/notification.context';
@@ -136,7 +136,10 @@ export const RegistroPage: React.FC<{}> = () => {
                                 error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                                 helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                             />
-                            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Registrarse</Button>
+                            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, mb: 2, fontSize: '20px' }} >Registrarse</Button>
+                            <Link onClick={() => navigate("/login")} underline="hover">
+                                {'¿Ya tenes cuenta? Inicia sesión'}
+                            </Link>
                         </Box>
                     </Paper>
                 </Grid>

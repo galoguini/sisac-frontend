@@ -1,10 +1,21 @@
-import { AppBar, Box, Button, Container, Grid, Stack, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Container, Grid, Menu, MenuItem, Stack, Toolbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAuth, logout } from '../api/usuarios';
 import { useNotification } from "../context/notification.context";
+import { Home } from "@mui/icons-material";
 
 export const NavBar: React.FC<{}> = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (event: any) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     const { getSuccess, getError } = useNotification();
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -33,21 +44,43 @@ export const NavBar: React.FC<{}> = () => {
                         <Grid container direction="row" justifyContent="space-between" alignItems="center">
                             <Grid item>
                                 <Stack direction="row" spacing={2}>
-                                    {/* <Typography>SIBAC</Typography> */}
-                                    <Button variant="text" onClick={() => navigate("/")}>Home</Button>
+                                    {!isAuthenticated ? (
+                                        <>
+                                            <Button variant="contained" onClick={() => navigate("/")} size="large" startIcon={<Home />}>SIBAC</Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button variant="contained" onClick={() => navigate("/")} size="small" startIcon={<Home />}>SIBAC</Button>
+                                            <Button variant="outlined" aria-controls="simple-menu" aria-haspopup="true" size="large" onClick={handleClick}>
+                                                Ventas
+                                            </Button>
+                                            <Menu
+                                                id="simple-menu"
+                                                anchorEl={anchorEl}
+                                                keepMounted
+                                                open={Boolean(anchorEl)}
+                                                onClose={handleClose}
+                                            >
+                                                <MenuItem onClick={() => { navigate('/presupuestos'); handleClose(); }}>Presupuestos</MenuItem>
+                                                <MenuItem onClick={() => { navigate('/clientes'); handleClose(); }}>Clientes</MenuItem>
+                                                <MenuItem onClick={() => { navigate('/productos'); handleClose(); }}>Productos</MenuItem>
+                                            </Menu>
+                                        </>
+                                    )}
                                 </Stack>
                             </Grid>
                             <Grid item>
                                 <Stack direction="row" spacing={2}>
                                     {!isAuthenticated ? (
                                         <>
-                                            <Button variant="contained" onClick={() => navigate("login")}>Login</Button>
-                                            <Button variant="outlined" onClick={() => navigate("registro")}>Registro</Button>
+                                            <Button variant="contained" size="large" onClick={() => navigate("login")}>Login</Button>
+                                            <Button variant="outlined" size="small" onClick={() => navigate("registro")}>Registro</Button>
                                         </>
                                     ) : (
                                         <>
-                                        <Button variant="contained" onClick={() => navigate("perfil")}>Perfil</Button>
-                                        <Button variant="text" onClick={handleLogout}>Logout</Button>
+                                            <Button variant="outlined" size="large" onClick={() => navigate("empresa_provisional")}>Mi Empresa</Button>
+                                            <Button variant="outlined" size="large" onClick={() => navigate("perfil")}>Mi Perfil</Button>
+                                            <Button variant="contained" size="small" color="error" onClick={handleLogout}>Logout</Button>
                                         </>
                                     )}
                                 </Stack>

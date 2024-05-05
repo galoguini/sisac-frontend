@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Button, Container, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, TextField, Typography, Link } from "@mui/material";
 import { useNotification } from "../../context/notification.context";
 import { LoginValidate } from "../../utils/usuariosForm";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import { login } from '../../api/usuarios'; 
+import { login } from '../../api/usuarios';
 
 type LoginType = {
     username: string;
@@ -67,7 +67,10 @@ export const LoginPage: React.FC<{}> = () => {
                                 error={formik.touched.password && Boolean(formik.errors.password)}
                                 helperText={formik.touched.password && formik.errors.password}
                             />
-                            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Iniciar sesión</Button>
+                            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, mb: 2, fontSize: '20px' }} >Iniciar sesión</Button>
+                            <Link onClick={() => navigate("/registro")} underline="hover">
+                                {'¿No tenes cuenta? Regístrate'}
+                            </Link>
                         </Box>
                     </Paper>
                 </Grid>
