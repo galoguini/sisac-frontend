@@ -11,6 +11,7 @@ import { ClientePage } from "./pages/clientes/clientes";
 import { ProductoPage } from "./pages/productos/productos";
 import { EmpresaPage } from "./pages/empresas/empresa";
 import { EmpresaProvisionalPage } from "./pages/empresas/empresa provisional";
+import { AgregarProductoPage } from "./pages/productos/agregar_productos";
 
 export const AppRouter: React.FC<{}> = () => {
     return (
@@ -23,8 +24,8 @@ export const AppRouter: React.FC<{}> = () => {
                 <Route path="/productos" element={<ProductoPage />} />
                 <Route path="/empresa" element={<EmpresaPage />} />
                 <Route path="/empresa_provisional" element={<EmpresaProvisionalPage />} />
+                <Route path="/agregar_producto" element={<AgregarProductoPage />} />
             </Route>
-            <Route path="/no" element={<div>no tengo navbar</div>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegistroPage />} />
             <Route path="/registro_empresa" element={<RegistroEmpresaPage />} />

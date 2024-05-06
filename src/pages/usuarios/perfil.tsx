@@ -4,7 +4,6 @@ import { Container, Typography, Box, Paper, TextField, Switch, Button, FormGroup
 import { useNotification } from "../../context/notification.context";
 import { useFormik } from "formik";
 import { EditarUsuarioValidate } from "../../utils/usuariosForm";
-import { useNavigate } from "react-router-dom";
 
 interface UserData {
     username: string;
@@ -22,7 +21,6 @@ type PerfilType = {
 };
 
 export const PerfilPage: React.FC<{}> = () => {
-    const navigate = useNavigate();
     const { getSuccess, getError } = useNotification();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [isEditable, setIsEditable] = useState(false);

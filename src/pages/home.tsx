@@ -15,12 +15,6 @@ export const HomePage: React.FC<{}> = () => {
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
             <Button variant='contained' onClick={handleClick}>SOY EL HOME</Button>
             </Paper>
-            <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
-            <Button variant='contained' onClick={handleClick}>SOY EL HOME</Button>
-            </Paper>
-            <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
-            <Button variant='contained' onClick={handleClick}>SOY EL HOME</Button>
-            </Paper>
         </Container>
     );
 }
