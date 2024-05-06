@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Container, FormControl, Grid, InputLabel, Paper, Select, TextField, Typography, MenuItem, InputAdornment } from "@mui/material";
 import { useFormik } from "formik";
 import { useNotification } from "../../context/notification.context";
-import { agregarEmpresa } from "../../api/empresa";
+import { agregarEmpresa, seleccionarEmpresa } from "../../api/empresa";
 import { EmpresaValidate } from "../../utils/empresasForm";
 import { useNavigate } from "react-router-dom";
 
@@ -60,6 +60,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
             try {
                 await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, values.fecha_inicio_actividad, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
                 getSuccess("Empresa agregada exitosamente");
+                await seleccionarEmpresa();
                 navigate('/');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {

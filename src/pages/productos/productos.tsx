@@ -141,6 +141,7 @@ export const ProductoPage: React.FC<{}> = () => {
                     <TextField
                         label="ID del producto a eliminar"
                         variant="outlined"
+                        fullWidth
                         value={idProductoAEliminar}
                         onChange={(e) => setIdProductoAEliminar(e.target.value)}
                     />

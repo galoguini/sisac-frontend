@@ -107,14 +107,14 @@ export const ClientePage: React.FC<{}> = () => {
             const data = await getClientes(busqueda);
             setClientes(data);
             if (data.length === 0) {
-                getError('No existe coincidencia con la búsqueda' + busqueda);
+                getError('No existe coincidencia con la búsqueda: ' + busqueda);
             }
         } catch (error) {
             getError('Ocurrió un error al cargar los clientes');
         }
     };
 
-    const handleElimiarCliente = async () => {
+    const handleEliminarCliente = async () => {
         const clienteAEliminar = clientes.find((cliente) => cliente.id === Number(idClienteAEliminar));
 
         if (!clienteAEliminar) {
@@ -155,10 +155,11 @@ export const ClientePage: React.FC<{}> = () => {
                     <TextField
                         label="ID del cliente a eliminar"
                         variant="outlined"
+                        fullWidth
                         value={idClienteAEliminar}
                         onChange={(e) => setIdClienteAEliminar(e.target.value)}
                     />
-                    <Button variant="contained" color="error" onClick={handleElimiarCliente}>Eliminar cliente</Button>
+                    <Button variant="contained" color="error" onClick={handleEliminarCliente}>Eliminar cliente</Button>
                 </Stack>
             </Paper>
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", mt: 4 }}>
