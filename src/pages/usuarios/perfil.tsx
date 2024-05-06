@@ -25,6 +25,21 @@ export const PerfilPage: React.FC<{}> = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [isEditable, setIsEditable] = useState(false);
 
+    const fetchData = async () => {
+        try {
+            const data = await getUser();
+            setUserData(data);
+            formik.setValues({
+                first_name: data.first_name,
+                last_name: data.last_name,
+                email: data.email,
+                celular: data.celular,
+            });
+        } catch (error: any) {
+            getError('Hubo un error al cargar los datos del usuario');
+        }
+    };
+
     const formik = useFormik({
         initialValues: {
             first_name: '',
@@ -38,21 +53,6 @@ export const PerfilPage: React.FC<{}> = () => {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await getUser();
-                setUserData(data);
-                formik.setValues({
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                    email: data.email,
-                    celular: data.celular,
-                });
-            } catch (error: any) {
-                getError('Hubo un error al cargar los datos del usuario');
-            }
-        };
-
         fetchData();
     }, []);
 
@@ -76,6 +76,7 @@ export const PerfilPage: React.FC<{}> = () => {
             setUserData(updatedUser);
             getSuccess('Cambios guardados exitosamente');
             setIsEditable(false);
+            fetchData();
         } catch (error: any) {
             getError('Hubo un error al guardar los cambios');
         }

@@ -56,7 +56,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
             tasa_iva: "",
             unidad_medida: "",
             precio_venta_usd: 0,
-            stock: 0,
+            stock: 1,
             observaciones: "",
         },
         validationSchema: ProductoValidate,
@@ -91,6 +91,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="nombre"
                                 value={formik.values.nombre}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.nombre && Boolean(formik.errors.nombre)}
                                 helperText={formik.touched.nombre && formik.errors.nombre}
                             />
@@ -102,6 +103,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="codigo_sku"
                                 value={formik.values.codigo_sku}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.codigo_sku && Boolean(formik.errors.codigo_sku)}
                                 helperText={formik.touched.codigo_sku && formik.errors.codigo_sku}
                             />
@@ -113,6 +115,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="codigo_barra"
                                 value={formik.values.codigo_barra}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.codigo_barra && Boolean(formik.errors.codigo_barra)}
                                 helperText={formik.touched.codigo_barra && formik.errors.codigo_barra}
                             />
@@ -124,7 +127,13 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 label="Categoría"
                                 name="categoria"
                                 value={formik.values.categoria}
-                                onChange={formik.handleChange}
+                                onChange={(e) => {
+                                    formik.handleChange(e);
+                                    if (e.target.value !== 'PRODUCTO') {
+                                        formik.setFieldValue('stock', 0);
+                                    }
+                                }}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.categoria && Boolean(formik.errors.categoria)}
                                 helperText={formik.touched.categoria && formik.errors.categoria}
                             >
@@ -143,6 +152,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="tasa_iva"
                                 value={formik.values.tasa_iva}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.tasa_iva && Boolean(formik.errors.tasa_iva)}
                                 helperText={formik.touched.tasa_iva && formik.errors.tasa_iva}
                             >
@@ -161,6 +171,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="unidad_medida"
                                 value={formik.values.unidad_medida}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.unidad_medida && Boolean(formik.errors.unidad_medida)}
                                 helperText={formik.touched.unidad_medida && formik.errors.unidad_medida}
                             >
@@ -176,11 +187,20 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 variant="outlined"
                                 label="Precio de venta (USD)"
                                 name="precio_venta_usd"
+                                inputProps={{ maxLength: 15 }}
                                 value={formik.values.precio_venta_usd}
-                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                onChange={(event) => {
+                                    const value = event.target.value;
+                                    if ((value.match(/\./g) || []).length > 1) {
+                                        return;
+                                    }
+                                    formik.handleChange(event);
+                                }}
                                 error={formik.touched.precio_venta_usd && Boolean(formik.errors.precio_venta_usd)}
                                 helperText={formik.touched.precio_venta_usd && formik.errors.precio_venta_usd}
                             />
+                            {formik.values.categoria === 'PRODUCTO' && (
                             <TextField
                                 fullWidth
                                 margin="normal"
@@ -189,9 +209,11 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="stock"
                                 value={formik.values.stock}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.stock && Boolean(formik.errors.stock)}
                                 helperText={formik.touched.stock && formik.errors.stock}
                             />
+                            )}
                             <TextField
                                 fullWidth
                                 margin="normal"
@@ -200,6 +222,7 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 name="observaciones"
                                 value={formik.values.observaciones}
                                 onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                                 error={formik.touched.observaciones && Boolean(formik.errors.observaciones)}
                                 helperText={formik.touched.observaciones && formik.errors.observaciones}
                             />

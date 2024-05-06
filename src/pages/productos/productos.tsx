@@ -89,6 +89,18 @@ export const ProductoPage: React.FC<{}> = () => {
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [idProductoAEliminar, setIdProductoAEliminar] = useState('');
 
+    const cargarProductos = async () => {
+        try {
+            const data = await getProductos(busqueda);
+            setProductos(data);
+            if (data.length === 0) {
+                getError('No existen coincidencias con la búsqueda: ' + busqueda);
+            }
+        } catch (error) {
+            getError('Error al cargar los productos');
+        }
+    };
+
     const handleEliminarProducto = async () => {
         const productoAEliminar = productos.find(producto => producto.id === Number(idProductoAEliminar));
     
@@ -110,18 +122,6 @@ export const ProductoPage: React.FC<{}> = () => {
     };
 
     useEffect(() => {
-        const cargarProductos = async () => {
-            try {
-                const data = await getProductos(busqueda);
-                setProductos(data);
-                if (data.length === 0) {
-                    getError('No existen coincidencias con la búsqueda: ' + busqueda);
-                }
-            } catch (error) {
-                getError('Error al cargar los productos');
-            }
-        };
-
         cargarProductos();
     }, [busqueda]);
 
