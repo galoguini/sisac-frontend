@@ -58,7 +58,10 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
         validationSchema: EmpresaValidate,
         onSubmit: async (values: EmpresaType) => {
             try {
-                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, values.fecha_inicio_actividad, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
+                const fecha = new Date(values.fecha_inicio_actividad);
+                const fechaInicioActividadFormateada = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth()+1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
+        
+                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
                 getSuccess("Empresa agregada exitosamente");
                 await seleccionarEmpresa();
                 navigate('/');

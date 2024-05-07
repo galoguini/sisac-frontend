@@ -6,7 +6,7 @@ export const PresupuestoValidate = yup.object().shape({
     vencimiento: yup.string().trim().required("El vencimiento es requerido"),
     moneda: yup.string().trim().required("La moneda es requerida"),
     cantidad: yup.number().required("La cantidad es requerida"),
-    precio: yup.number().required("El precio es requerido"),
+    precio: yup.string().matches(/^[0-9.]+$/, "Ingrese solo numeros // Los decimales se separan con un punto").max(20, "El precio no puede superar los 20 digitos").required("El precio es requerido"),
     observaciones: yup.string().trim(),
     producto: yup.string().trim().required("El producto o servicio es requerido"),
 });

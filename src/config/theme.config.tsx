@@ -51,7 +51,7 @@ const theme = createTheme({
                     fontSize: "4em",
                 },
             },
-        }
+        },
     },
 });
 

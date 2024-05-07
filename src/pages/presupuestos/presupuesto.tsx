@@ -3,11 +3,11 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { useNotification } from "../../context/notification.context";
 import { useNavigate } from "react-router-dom";
-import { getPresupuestos } from "../../api/presupuestos";
-import { eliminarProducto } from "../../api/productos";
+import { eliminarPresupuesto, getPresupuestos } from "../../api/presupuestos";
 
 type PresupuestoType = {
     id: number;
+    numero_presupuesto: number;
     cliente: string;
     fecha: string;
     vencimiento: string;
@@ -20,6 +20,12 @@ type PresupuestoType = {
 
 const columns: GridColDef<PresupuestoType>[] = [
     {
+        field: "numero_presupuesto",
+        headerName: "Número de presupuesto",
+        width: 200,
+        editable: false,
+    },
+    {
         field: "fecha",
         headerName: "Fecha",
         width: 100,
@@ -28,12 +34,6 @@ const columns: GridColDef<PresupuestoType>[] = [
     {
         field: "vencimiento",
         headerName: "Vencimiento",
-        width: 150,
-        editable: false,
-    },
-    {
-        field: "id",
-        headerName: "ID",
         width: 150,
         editable: false,
     },
@@ -77,6 +77,8 @@ const columns: GridColDef<PresupuestoType>[] = [
 
 export const PresupuestoPage: React.FC<{}> = () => {
     const [busqueda, setBusqueda] = useState('');
+    const [fechaInicio, setFechaInicio] = useState('');
+    const [fechaFin, setFechaFin] = useState('');
     const { getSuccess, getError } = useNotification();
     const navigate = useNavigate();
     const [presupuestos, setPresupuestos] = useState<PresupuestoType[]>([]);
@@ -84,7 +86,10 @@ export const PresupuestoPage: React.FC<{}> = () => {
 
     const cargarPresupuestos = async () => {
         try {
-            const data = await getPresupuestos(busqueda);
+            const fechaInicioFormateada = fechaInicio ? `${(new Date(fechaInicio).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaInicio).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaInicio).getFullYear()}` : '';
+            const fechaFinFormateada = fechaFin ? `${(new Date(fechaFin).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaFin).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaFin).getFullYear()}` : '';
+            
+            const data = await getPresupuestos(busqueda, fechaInicioFormateada, fechaFinFormateada);
             setPresupuestos(data);
             if (data.length === 0) {
                 getError('No existe coincidencia con la búsqueda: ' + busqueda);
@@ -95,18 +100,18 @@ export const PresupuestoPage: React.FC<{}> = () => {
     };
 
     const handleEliminarPresupuesto = async () => {
-        const presupuestoAEliminar = presupuestos.find((presupuesto) => presupuesto.id === Number(idPresupuestoAEliminar));
+        const presupuestoAEliminar = presupuestos.find((presupuesto) => presupuesto.numero_presupuesto === Number(idPresupuestoAEliminar));
 
         if (!presupuestoAEliminar) {
             getError('No se encontró el presupuesto a eliminar');
             return;
         }
 
-        const confirmar = window.confirm(`¿Estás seguro de eliminar el presupuesto con ID ${presupuestoAEliminar.id}?`);
+        const confirmar = window.confirm(`¿Estás seguro de eliminar el presupuesto nro. ${presupuestoAEliminar.numero_presupuesto}?`);
 
         if (confirmar) {
             try {
-                await eliminarProducto(Number(idPresupuestoAEliminar));
+                await eliminarPresupuesto(Number(idPresupuestoAEliminar));
                 getSuccess('Presupuesto eliminado correctamente');
                 cargarPresupuestos();
             } catch (error: any) {
@@ -117,24 +122,16 @@ export const PresupuestoPage: React.FC<{}> = () => {
 
     useEffect(() => {
         cargarPresupuestos();
-    }, [busqueda]);
+    }, [busqueda, fechaInicio, fechaFin]);
 
 
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between' }}>
-                <Stack direction="row" spacing={2}>
-                    <TextField
-                        label="Buscar presupuesto"
-                        variant="outlined"
-                        value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                    />
-                </Stack>
                 <Button variant="contained" color="success" onClick={() => navigate("/agregar_presupuesto")}>Agregar presupuesto</Button>
                 <Stack direction="row" spacing={2}>
                     <TextField
-                        label="ID del presupuesto a eliminar"
+                        label="nro. Del presupuesto a eliminar"
                         variant="outlined"
                         fullWidth
                         value={idPresupuestoAEliminar}
@@ -143,7 +140,37 @@ export const PresupuestoPage: React.FC<{}> = () => {
                     <Button variant="contained" color="error" onClick={handleEliminarPresupuesto}>Eliminar presupuesto</Button>
                 </Stack>
             </Paper>
-            <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", mt: 4 }}>
+            <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+                <TextField
+                    label="Buscar presupuesto"
+                    variant="outlined"
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                />
+                <Stack direction="row" spacing={2}>
+                    <TextField
+                        label="Desde fecha"
+                        variant="outlined"
+                        type="date"
+                        value={fechaInicio}
+                        onChange={(e) => setFechaInicio(e.target.value)}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <TextField
+                        label="Hasta fecha"
+                        variant="outlined"
+                        type="date"
+                        value={fechaFin}
+                        onChange={(e) => setFechaFin(e.target.value)}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Stack>
+            </Paper>
+            <Paper sx={{ width: '100%', padding: "1.2em", borderRadius: "0.5em", mt: 4 }}>
                 <Typography variant="h4">Listado de presupuestos</Typography>
                 <DataGrid sx={{ mt: 2 }}
                     rows={presupuestos}

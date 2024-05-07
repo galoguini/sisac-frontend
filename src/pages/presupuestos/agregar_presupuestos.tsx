@@ -14,7 +14,7 @@ type PresupuestoType = {
     vencimiento: string;
     moneda: string;
     cantidad: number;
-    precio: number;
+    precio: string;
     observaciones: string;
     producto: string;
 };
@@ -52,15 +52,21 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
             fecha: '',
             vencimiento: '',
             moneda: '',
-            cantidad: 0,
-            precio: 0,
+            cantidad: 1,
+            precio: '',
             observaciones: '',
             producto: '',
         },
         validationSchema: PresupuestoValidate,
         onSubmit: async (values: PresupuestoType) => {
             try {
-                await agregarPresupuesto(values.cliente, values.fecha, values.vencimiento, values.moneda, values.cantidad, values.precio, values.observaciones, values.producto);
+                const fecha = new Date(values.fecha);
+                const fechaFormateada = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
+
+                const vencimiento = new Date(values.vencimiento);
+                const vencimientoFormateado = `${vencimiento.getDate().toString().padStart(2, '0')}-${(vencimiento.getMonth() + 1).toString().padStart(2, '0')}-${vencimiento.getFullYear()}`;
+
+                await agregarPresupuesto(values.cliente, fechaFormateada, vencimientoFormateado, values.moneda, values.cantidad, values.precio, values.observaciones, values.producto);
                 getSuccess("Presupuesto agregado correctamente");
                 navigate('/presupuestos');
             } catch (error: any) {
@@ -131,7 +137,8 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 id="precio"
                                 name="precio"
                                 label="Precio"
-                                type="number"
+                                type="text"
+                                inputProps={{ maxLength: 20 }}
                                 value={formik.values.precio}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
