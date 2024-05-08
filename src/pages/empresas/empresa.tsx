@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { Button, Container, Grid, Paper, TextField, Typography, Box, FormControl, InputLabel, Select, MenuItem, InputAdornment, FormGroup, FormControlLabel, Switch } from "@mui/material";
 import { useNotification } from "../../context/notification.context";
 import { EmpresaValidate } from "../../utils/empresasForm";
-import { getEmpresa } from "../../api/empresa";
+import { editEmpresa, getEmpresa } from "../../api/empresa";
 
 interface EmpresaData {
     nombre_empresa: string;
@@ -38,27 +38,10 @@ type EmpresaType = {
 };
 
 export const EmpresaPage: React.FC<{}> = () => {
+    const { getSuccess, getError } = useNotification();
     const [empresaData, setEmpresaData] = useState<EmpresaData | null>(null);
     const [isEditable, setIsEditable] = useState(false);
-    const [initialValues, setInitialValues] = useState<EmpresaType>({
-        nombre_empresa: '',
-        nombre_fantasia: '',
-        categoria_fiscal: '',
-        tipo_cuenta: '',
-        cuit: '',
-        nro_ingresos_brutos: '',
-        fecha_inicio_actividad: '',
-        direccion: '',
-        provincia: '',
-        localidad: '',
-        telefono: '',
-        email: '',
-        CBU: '',
-    });
-
-    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsEditable(event.target.checked);
-    };
+    const [empresa, setEmpresa] = useState<EmpresaType[]>([]);
 
     const CATEGORIAS = [
         'Consumidor Final',
@@ -73,69 +56,96 @@ export const EmpresaPage: React.FC<{}> = () => {
         'Persona Humana',
     ];
 
-    const formik = useFormik<EmpresaType>({
-        initialValues: initialValues,
-        validationSchema: EmpresaValidate,
-        onSubmit: async () => {
-            try {
-                const data = await getEmpresa();
-                formik.setValues({
-                    nombre_empresa:  data.nombre_empresa,
-                    nombre_fantasia: data.nombre_fantasia,
-                    categoria_fiscal: data.categoria_fiscal,
-                    tipo_cuenta: data.tipo_cuenta,
-                    cuit: data.cuit,
-                    nro_ingresos_brutos: data.nro_ingresos_brutos,
-                    fecha_inicio_actividad: data.fecha_inicio_actividad,
-                    direccion: data.direccion,
-                    provincia: data.provincia,
-                    localidad: data.localidad,
-                    telefono: data.telefono,
-                    email: data.email,
-                    CBU: data.CBU,
-                });
-                console.log('Empresa obtenida:', data);
-            } catch (error: any) {
-                console.error('Error al obtener la empresa', error);
-            }
+    const cargarEmpresa = async () => {
+        const data = await getEmpresa();
+
+        setEmpresa(data);
+    }
+
+    const fetchData = async () => {
+        try {
+            const data = await getEmpresa();
+            setEmpresa(data);
+            console.log("lo q get da: ", data);
+            formik.setValues({
+                nombre_empresa: data.nombre_empresa,
+                nombre_fantasia: data.nombre_fantasia,
+                categoria_fiscal: data.categoria_fiscal,
+                tipo_cuenta: data.tipo_cuenta,
+                cuit: data.cuit,
+                nro_ingresos_brutos: data.nro_ingresos_brutos,
+                fecha_inicio_actividad: data.fecha_inicio_actividad,
+                direccion: data.direccion,
+                provincia: data.provincia,
+                localidad: data.localidad,
+                telefono: data.telefono,
+                email: data.email,
+                CBU: data.CBU,
+            });
+            console.log("lo q fomrik recibe 1"+ JSON.stringify(formik.values));
+        } catch (error: any) {
+            getError('Hubo un error al cargar los datos de la empresa');
         }
+    };
+
+    const formik = useFormik({
+        initialValues: {
+            nombre_empresa: '',
+            nombre_fantasia: '',
+            categoria_fiscal: '',
+            tipo_cuenta: '',
+            cuit: '',
+            nro_ingresos_brutos: '',
+            fecha_inicio_actividad: '',
+            direccion: '',
+            provincia: '',
+            localidad: '',
+            telefono: '',
+            email: '',
+            CBU: '',
+        },
+        validationSchema: EmpresaValidate,
+        onSubmit: async (values: EmpresaType) => handleSaveChanges(values),
+        enableReinitialize: true,
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await getEmpresa();
-                setEmpresaData(data);
-                setInitialValues({
-                    nombre_empresa: data.nombre_empresa,
-                    nombre_fantasia: data.nombre_fantasia,
-                    categoria_fiscal: data.categoria_fiscal,
-                    tipo_cuenta: data.tipo_cuenta,
-                    cuit: data.cuit,
-                    nro_ingresos_brutos: data.nro_ingresos_brutos,
-                    fecha_inicio_actividad: data.fecha_inicio_actividad,
-                    direccion: data.direccion,
-                    provincia: data.provincia,
-                    localidad: data.localidad,
-                    telefono: data.telefono,
-                    email: data.email,
-                    CBU: data.CBU,
-                });
-                console.log('Empresa obtenida:', data);
-            } catch (error: any) {
-                console.error('Error al cargar los datos de la empresa', error);
-            }
-        };
-    
+        // cargarEmpresa();
         fetchData();
     }, []);
 
+    const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsEditable(event.target.checked);
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        formik.handleChange(event);
+        if (empresaData) {
+            setEmpresaData({
+                ...empresaData,
+                [event.target.name]: event.target.value
+            });
+        }
+    };
+
+    const handleSaveChanges = async (values: EmpresaType) => {
+        try {
+            const updatedEmpresa = await editEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, values.fecha_inicio_actividad, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
+            setEmpresaData(updatedEmpresa);
+            getSuccess('Cambios guardados exitosamente');
+            setIsEditable(false);
+            fetchData();
+        } catch (error: any) {
+            getError('Hubo un error al guardar los cambios');
+        }
+    };
+
     useEffect(() => {
-        console.log("lo q fomrik recibe 2"+ JSON.stringify(formik.values));
+        console.log("lo q fomrik recibe 1"+ JSON.stringify(formik.values));
     }, [formik.values]);
 
     return (
-        <Container maxWidth="sm">
+        <Container sx={{ mt:9 }} maxWidth="sm">
             {empresaData && (
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{ minHeight: "50vh" }}>
                 <Grid item>
@@ -157,7 +167,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Nombre de la empresa"
                                 disabled={!isEditable}
                                 value={formik.values.nombre_empresa}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.nombre_empresa && Boolean(formik.errors.nombre_empresa)}
                                 helperText={formik.touched.nombre_empresa && formik.errors.nombre_empresa}
@@ -169,7 +179,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Nombre de fantasía"
                                 disabled={!isEditable}
                                 value={formik.values.nombre_fantasia}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.nombre_fantasia && Boolean(formik.errors.nombre_fantasia)}
                                 helperText={formik.touched.nombre_fantasia && formik.errors.nombre_fantasia}
@@ -224,7 +234,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 disabled={!isEditable}
                                 inputProps={{ maxLength: 11 }}
                                 value={formik.values.cuit}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.cuit && Boolean(formik.errors.cuit)}
                                 helperText={formik.touched.cuit && formik.errors.cuit}
@@ -236,7 +246,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Número de ingresos brutos"
                                 disabled={!isEditable}
                                 value={formik.values.nro_ingresos_brutos}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.nro_ingresos_brutos && Boolean(formik.errors.nro_ingresos_brutos)}
                                 helperText={formik.touched.nro_ingresos_brutos && formik.errors.nro_ingresos_brutos}
@@ -248,7 +258,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Fecha de inicio de actividad"
                                 disabled={!isEditable}
                                 value={formik.values.fecha_inicio_actividad}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.fecha_inicio_actividad && Boolean(formik.errors.fecha_inicio_actividad)}
                                 helperText={formik.touched.fecha_inicio_actividad && formik.errors.fecha_inicio_actividad}
@@ -263,7 +273,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Dirección"
                                 disabled={!isEditable}
                                 value={formik.values.direccion}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.direccion && Boolean(formik.errors.direccion)}
                                 helperText={formik.touched.direccion && formik.errors.direccion}
@@ -275,7 +285,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Provincia"
                                 disabled={!isEditable}
                                 value={formik.values.provincia}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.provincia && Boolean(formik.errors.provincia)}
                                 helperText={formik.touched.provincia && formik.errors.provincia}
@@ -287,7 +297,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Localidad"
                                 disabled={!isEditable}
                                 value={formik.values.localidad}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.localidad && Boolean(formik.errors.localidad)}
                                 helperText={formik.touched.localidad && formik.errors.localidad}
@@ -299,7 +309,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Teléfono"
                                 disabled={!isEditable}
                                 value={formik.values.telefono}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.telefono && Boolean(formik.errors.telefono)}
                                 helperText={formik.touched.telefono && formik.errors.telefono}
@@ -314,7 +324,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 label="Email"
                                 disabled={!isEditable}
                                 value={formik.values.email}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.email && Boolean(formik.errors.email)}
                                 helperText={formik.touched.email && formik.errors.email}
@@ -327,7 +337,7 @@ export const EmpresaPage: React.FC<{}> = () => {
                                 disabled={!isEditable}
                                 inputProps={{ maxLength: 22 }}
                                 value={formik.values.CBU}
-                                onChange={formik.handleChange}
+                                onChange={handleInputChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.CBU && Boolean(formik.errors.CBU)}
                                 helperText={formik.touched.CBU && formik.errors.CBU}

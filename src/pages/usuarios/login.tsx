@@ -42,7 +42,7 @@ export const LoginPage: React.FC<{}> = () => {
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{ minHeight: "50vh" }}>
                 <Grid item>
                     <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
-                        <Typography sx={{ mt: 1, mb: 1 }} variant="h5">Sistema Básico de Administración Contable</Typography>
+                        <Typography sx={{ mt: 1, mb: 1 }} variant="h5">Sistema de Administración Contable</Typography>
                         <Box component="form" onSubmit={formik.handleSubmit}>
                             <TextField name="username"
                                 margin="normal"

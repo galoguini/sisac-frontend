@@ -9,53 +9,76 @@ import { getClientes } from "../../api/clientes";
 import { getProductos } from "../../api/productos";
 
 type PresupuestoType = {
-    cliente: string;
+    cliente: ClienteType | null;
     fecha: string;
     vencimiento: string;
     moneda: string;
     cantidad: number;
     precio: string;
     observaciones: string;
-    producto: string;
+    producto: ProductoType | null;
 };
 
+type ProductoType = {
+    nombre: string,
+    codigo_sku: string,
+    codigo_barra: string,
+    categoria: string,
+    tasa_iva: string,
+    unidad_medida: string,
+    precio_venta_usd: number,
+    stock: number,
+    observaciones: string
+}
+
+type ClienteType = {
+    nombre_apellido: string,
+    tipo_identificacion: string,
+    numero_identificacion: string,
+    otro_identificacion: string,
+    condicion_iva: string,
+    pais: string,
+    provincia: string,
+    localidad: string,
+    domicilio: string,
+    email: string,
+    telefono: string
+}
 
 export const AgregarPresupuestoPage: React.FC<{}> = () => {
-    const [busquedaCliente, setBusquedaCliente] = useState('');
-    const [busquedaProducto, setBusquedaProducto] = useState('');
     const navigate = useNavigate();
     const { getSuccess, getError } = useNotification();
-    const [clientes, setClientes] = useState([]);
-    const [productos, setProductos] = useState([]);
+    const [clientes, setClientes] = useState<ClienteType[]>([]);
+    const [productos, setProductos] = useState<ProductoType[]>([]);
 
     const MONEDAS = [
-        'USD',
-        'ARS',
-    ]
+        { value: 'ARS', label: 'Peso argentino' },
+        { value: 'USD', label: 'Dólar estadounidense' },
+        { value: 'EUR', label: 'Euro' },
+    ];
 
     const fetchData = async () => {
-        const clientesData = await getClientes(busquedaCliente);
-        const productosData = await getProductos(busquedaProducto);
+        const clientesData = await getClientes("");
+        const productosData = await getProductos("");
 
         setClientes(clientesData);
         setProductos(productosData);
     };
 
     useEffect(() => {
-
         fetchData();
-    }, [busquedaCliente, busquedaProducto]);
+    }, []);
 
     const formik = useFormik({
         initialValues: {
-            cliente: '',
+            cliente: null,
             fecha: '',
             vencimiento: '',
             moneda: '',
             cantidad: 1,
             precio: '',
             observaciones: '',
-            producto: '',
+            producto: null,
         },
         validationSchema: PresupuestoValidate,
         onSubmit: async (values: PresupuestoType) => {
@@ -66,7 +89,10 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                 const vencimiento = new Date(values.vencimiento);
                 const vencimientoFormateado = `${vencimiento.getDate().toString().padStart(2, '0')}-${(vencimiento.getMonth() + 1).toString().padStart(2, '0')}-${vencimiento.getFullYear()}`;
 
-                await agregarPresupuesto(values.cliente, fechaFormateada, vencimientoFormateado, values.moneda, values.cantidad, values.precio, values.observaciones, values.producto);
+                const clienteString = values.cliente ? values.cliente.nombre_apellido : '';
+                const productoString = values.producto ? values.producto.nombre : '';
+
+                await agregarPresupuesto(clienteString, fechaFormateada, vencimientoFormateado, values.moneda, values.cantidad, values.precio, values.observaciones, productoString);
                 getSuccess("Presupuesto agregado correctamente");
                 navigate('/presupuestos');
             } catch (error: any) {
@@ -171,30 +197,52 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 helperText={formik.touched.moneda && formik.errors.moneda}
                             >
                                 {MONEDAS.map((tipo) => (
-                                    <MenuItem key={tipo} value={tipo}>
-                                        {tipo}
+                                    <MenuItem key={tipo.value} value={tipo.value}>
+                                        {tipo.label}
                                     </MenuItem>
                                 ))}
                             </TextField>
                             <Autocomplete
                                 fullWidth
                                 options={clientes}
-                                getOptionLabel={(option) => option.nombre_apellido}
+                                getOptionLabel={(option) => 
+                                    `${option.nombre_apellido}, ${option.pais}, ${option.tipo_identificacion === 'OTRO' ? 'Identificación: ' + option.otro_identificacion : option.tipo_identificacion}: ${option.numero_identificacion}`
+                                }
                                 value={formik.values.cliente}
-                                onChange={(event, newValue) => {
-                                    formik.setFieldValue('cliente', newValue ? newValue.nombre_apellido : '');
+                                onChange={(_, newValue) => {
+                                    formik.setFieldValue('cliente', newValue);
                                 }}
-                                renderInput={(params) => <TextField {...params} label="Cliente" margin="normal" />}
+                                isOptionEqualToValue={(option, value) => option.nombre_apellido === value.nombre_apellido}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                        label="Cliente"
+                                        margin="normal"
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.cliente && Boolean(formik.errors.cliente)}
+                                        helperText={formik.touched.cliente && formik.errors.cliente}
+                                    />
+                                }
                             />
                             <Autocomplete
                                 fullWidth
                                 options={productos}
                                 getOptionLabel={(option) => option.nombre}
                                 value={formik.values.producto}
-                                onChange={(event, newValue) => {
-                                    formik.setFieldValue('producto', newValue ? newValue.nombre : '');
+                                onChange={(_, newValue) => {
+                                    formik.setFieldValue('producto', newValue);
                                 }}
-                                renderInput={(params) => <TextField {...params} label="Producto" margin="normal" />}
+                                isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                        label="Producto"
+                                        margin="normal"
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.producto && Boolean(formik.errors.producto)}
+                                        helperText={formik.touched.producto && formik.errors.producto}
+                                    />
+                                }
                             />
                             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Agregar presupuesto</Button>
                         </Box>
