@@ -18,64 +18,70 @@ type PresupuestoType = {
     producto: string;
 };
 
-const columns: GridColDef<PresupuestoType>[] = [
-    {
-        field: "numero_presupuesto",
-        headerName: "Número de presupuesto",
-        width: 200,
-        editable: false,
-    },
-    {
-        field: "fecha",
-        headerName: "Fecha",
-        width: 100,
-        editable: false,
-    },
-    {
-        field: "vencimiento",
-        headerName: "Vencimiento",
-        width: 150,
-        editable: false,
-    },
-    {
-        field: "cliente",
-        headerName: "Cliente",
-        width: 300,
-        editable: false,
-    },
-    {
-        field: "moneda",
-        headerName: "Moneda",
-        width: 150,
-        editable: false,
-    },
-    {
-        field: "precio",
-        headerName: "Precio",
-        width: 150,
-        editable: false,
-    },
-    {
-        field: "observaciones",
-        headerName: "Observaciones",
-        width: 200,
-        editable: false,
-    },
-    {
-        field: "cantidad",
-        headerName: "Cantidad",
-        width: 150,
-        editable: false,
-    },
-    {
-        field: "producto",
-        headerName: "Producto",
-        width: 300,
-        editable: false,
-    },
-];
-
 export const PresupuestoPage: React.FC<{}> = () => {
+    const columns: GridColDef<PresupuestoType>[] = [
+        {
+            field: "numero_presupuesto",
+            headerName: "Número de presupuesto",
+            width: 200,
+            editable: false,
+            renderCell: (params) => (
+                <Button variant="contained" onClick={() => {
+                    navigate('/detalle_presupuesto', { state: { numeroPresupuesto: params.value } });
+                }}>
+                    {params.value}
+                </Button>
+            ),
+        },
+        {
+            field: "fecha",
+            headerName: "Fecha",
+            width: 100,
+            editable: false,
+        },
+        {
+            field: "vencimiento",
+            headerName: "Vencimiento",
+            width: 150,
+            editable: false,
+        },
+        {
+            field: "cliente",
+            headerName: "Cliente",
+            width: 300,
+            editable: false,
+        },
+        {
+            field: "moneda",
+            headerName: "Moneda",
+            width: 150,
+            editable: false,
+        },
+        {
+            field: "precio",
+            headerName: "Precio",
+            width: 150,
+            editable: false,
+        },
+        {
+            field: "observaciones",
+            headerName: "Observaciones",
+            width: 200,
+            editable: false,
+        },
+        {
+            field: "cantidad",
+            headerName: "Cantidad",
+            width: 150,
+            editable: false,
+        },
+        {
+            field: "producto",
+            headerName: "Producto",
+            width: 300,
+            editable: false,
+        },
+    ];
     const [busqueda, setBusqueda] = useState('');
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
@@ -88,7 +94,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
         try {
             const fechaInicioFormateada = fechaInicio ? `${(new Date(fechaInicio).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaInicio).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaInicio).getFullYear()}` : '';
             const fechaFinFormateada = fechaFin ? `${(new Date(fechaFin).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaFin).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaFin).getFullYear()}` : '';
-            
+
             const data = await getPresupuestos(busqueda, fechaInicioFormateada, fechaFinFormateada);
             setPresupuestos(data);
             if (data.length === 0) {

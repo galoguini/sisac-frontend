@@ -176,6 +176,8 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 margin="normal"
                                 id="observaciones"
                                 name="observaciones"
+                                multiline
+                                rows={4}
                                 label="Observaciones"
                                 value={formik.values.observaciones}
                                 onChange={formik.handleChange}

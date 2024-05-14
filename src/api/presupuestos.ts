@@ -42,3 +42,17 @@ export const eliminarPresupuesto = async (numero_presupuesto: number) => {
         throw error;
     }
 }
+
+export const getDetallePresupuesto = async (numero_presupuesto: number) => {
+    try {
+        const token = Cookies.get('authToken');
+        const response = await apiURL.get(`presupuestos/detalle/${numero_presupuesto}/`, {
+            headers: {
+                Authorization: `Token ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

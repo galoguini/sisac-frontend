@@ -218,6 +218,8 @@ export const AgregarProductoPage: React.FC<{}> = () => {
                                 fullWidth
                                 margin="normal"
                                 variant="outlined"
+                                multiline
+                                rows={4}
                                 label="Observaciones"
                                 name="observaciones"
                                 value={formik.values.observaciones}
