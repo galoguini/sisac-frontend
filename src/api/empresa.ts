@@ -23,7 +23,6 @@ export const getEmpresa = async () => {
                 Authorization: `Token ${token}`
             }
         });
-        console.log("lo q el get da: ", response.data);
         return response.data;
     } catch (error) {
         throw error;

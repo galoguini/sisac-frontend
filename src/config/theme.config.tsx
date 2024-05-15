@@ -8,6 +8,8 @@ type ThemeProps = {
 enum themePalette {
     BG = '#053545',
     CRUNCHY = '#f47521',
+    // BG = '#f47521',
+    // CRUNCHY = '#053545',
     FONT_GLOBAL = 'Roboto',
     // alertas (fijate si lo usas)
     // FONT_COLOR = "#000000",

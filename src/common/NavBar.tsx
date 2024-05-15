@@ -78,7 +78,7 @@ export const NavBar: React.FC<{}> = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <Button variant="outlined" size="large" onClick={() => navigate("empresa_provisional")}>Mi Empresa</Button>
+                                            <Button variant="outlined" size="large" onClick={() => navigate("empresa1")}>Mi Empresa</Button>
                                             <Button variant="outlined" size="large" onClick={() => navigate("perfil")}>Mi Perfil</Button>
                                             <Button variant="contained" size="small" color="error" onClick={handleLogout}>Logout</Button>
                                         </>

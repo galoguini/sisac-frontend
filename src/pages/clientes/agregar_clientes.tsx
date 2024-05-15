@@ -36,6 +36,7 @@ export const AgregarClientesPage: React.FC<{}> = () => {
         'RESPONSABLE INSCRIPTO',
         'MONOTRIBUTISTA',
         'EXTERIOR',
+        'EXENTO',
         'CONSUMIDOR FINAL',
         'IVA NO ALCANZADO',
     ]

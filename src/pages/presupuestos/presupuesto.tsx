@@ -159,6 +159,11 @@ export const PresupuestoPage: React.FC<{}> = () => {
                         variant="outlined"
                         type="date"
                         value={fechaInicio}
+                        sx={{
+                            '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                                filter: 'invert(1)',
+                            },
+                        }}
                         onChange={(e) => setFechaInicio(e.target.value)}
                         InputLabelProps={{
                             shrink: true,
@@ -169,6 +174,11 @@ export const PresupuestoPage: React.FC<{}> = () => {
                         variant="outlined"
                         type="date"
                         value={fechaFin}
+                        sx={{
+                            '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                                filter: 'invert(1)',
+                            },
+                        }}
                         onChange={(e) => setFechaFin(e.target.value)}
                         InputLabelProps={{
                             shrink: true,

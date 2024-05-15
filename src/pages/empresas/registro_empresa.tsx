@@ -172,6 +172,11 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                                 type="date"
                                 fullWidth
                                 label="Fecha de inicio de actividad"
+                                sx={{
+                                    '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                                        filter: 'invert(1)',
+                                    },
+                                }}
                                 value={formik.values.fecha_inicio_actividad}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}

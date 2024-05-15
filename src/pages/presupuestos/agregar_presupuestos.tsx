@@ -4,9 +4,10 @@ import { useNotification } from "../../context/notification.context";
 import { useFormik } from "formik";
 import { PresupuestoValidate } from "../../utils/presupuestosForm";
 import { agregarPresupuesto } from "../../api/presupuestos";
-import { Autocomplete, Box, Button, Container, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Link, Autocomplete, Box, Button, Container, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { getClientes } from "../../api/clientes";
 import { getProductos } from "../../api/productos";
+import { getDolarTarjeta } from "../../api/dolar.api";
 
 type PresupuestoType = {
     cliente: ClienteType | null;
@@ -50,11 +51,17 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
     const { getSuccess, getError } = useNotification();
     const [clientes, setClientes] = useState<ClienteType[]>([]);
     const [productos, setProductos] = useState<ProductoType[]>([]);
+    const [valorDolar, setValorDolar] = useState<number>(0);
+
+    const valorDolarTarjeta = async () => {
+        const dolarTarjeta = await getDolarTarjeta();
+        setValorDolar(dolarTarjeta.venta);
+    }
 
     const MONEDAS = [
         { value: 'ARS', label: 'Peso argentino' },
         { value: 'USD', label: 'Dólar estadounidense' },
-        { value: 'EUR', label: 'Euro' },
+        // { value: 'EUR', label: 'Euro' },
     ];
 
     const fetchData = async () => {
@@ -67,6 +74,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
 
     useEffect(() => {
         fetchData();
+        valorDolarTarjeta();
     }, []);
 
     const formik = useFormik({
@@ -119,6 +127,11 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 name="fecha"
                                 label="Fecha"
                                 type="date"
+                                sx={{
+                                    '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                                        filter: 'invert(1)',
+                                    },
+                                }}
                                 value={formik.values.fecha}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -135,6 +148,11 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 name="vencimiento"
                                 label="Vencimiento"
                                 type="date"
+                                sx={{
+                                    '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                                        filter: 'invert(1)',
+                                    },
+                                }}
                                 value={formik.values.vencimiento}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -157,7 +175,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 error={formik.touched.cantidad && Boolean(formik.errors.cantidad)}
                                 helperText={formik.touched.cantidad && formik.errors.cantidad}
                             />
-                            <TextField
+                            {/* <TextField
                                 fullWidth
                                 margin="normal"
                                 id="precio"
@@ -170,7 +188,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.precio && Boolean(formik.errors.precio)}
                                 helperText={formik.touched.precio && formik.errors.precio}
-                            />
+                            /> */}
                             <TextField
                                 fullWidth
                                 margin="normal"
@@ -193,7 +211,18 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                 select
                                 label="Moneda"
                                 value={formik.values.moneda}
-                                onChange={formik.handleChange}
+                                onChange={(event) => {
+                                    formik.handleChange(event);
+                                    if (formik.values.producto) {
+                                        let nuevoPrecio = 0;
+                                        if (event.target.value === 'ARS') {
+                                            nuevoPrecio = parseFloat((formik.values.producto.precio_venta_usd * valorDolar).toFixed(2));
+                                        } else if (event.target.value === 'USD') {
+                                            nuevoPrecio = formik.values.producto.precio_venta_usd;
+                                        }
+                                        formik.setFieldValue('precio', nuevoPrecio.toString());
+                                    }
+                                }}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.moneda && Boolean(formik.errors.moneda)}
                                 helperText={formik.touched.moneda && formik.errors.moneda}
@@ -207,7 +236,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                             <Autocomplete
                                 fullWidth
                                 options={clientes}
-                                getOptionLabel={(option) => 
+                                getOptionLabel={(option) =>
                                     `${option.nombre_apellido}, ${option.pais}, ${option.tipo_identificacion === 'OTRO' ? 'Identificación: ' + option.otro_identificacion : option.tipo_identificacion}: ${option.numero_identificacion}`
                                 }
                                 value={formik.values.cliente}
@@ -226,7 +255,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                     />
                                 }
                             />
-                            <Autocomplete
+                            {/* <Autocomplete
                                 fullWidth
                                 options={productos}
                                 getOptionLabel={(option) => option.nombre}
@@ -245,8 +274,60 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                         helperText={formik.touched.producto && formik.errors.producto}
                                     />
                                 }
+                            /> */}
+                            <Autocomplete
+                                fullWidth
+                                options={productos}
+                                getOptionLabel={(option) => `${option.nombre} - $${option.precio_venta_usd}`}
+                                value={formik.values.producto}
+                                onChange={(_, newValue) => {
+                                    formik.setFieldValue('producto', newValue);
+                                    if (newValue) {
+                                        let nuevoPrecio = 0;
+                                        if (formik.values.moneda === 'ARS') {
+                                            nuevoPrecio = parseFloat((newValue.precio_venta_usd * valorDolar).toFixed(2));
+                                        } else if (formik.values.moneda === 'USD') {
+                                            nuevoPrecio = newValue.precio_venta_usd;
+                                        }
+                                        formik.setFieldValue('precio', nuevoPrecio.toString());
+                                    } else {
+                                        formik.setFieldValue('precio', '');
+                                    }
+                                }}
+                                isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+                                        label="Producto"
+                                        margin="normal"
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.producto && Boolean(formik.errors.producto)}
+                                        helperText={formik.touched.producto && formik.errors.producto}
+                                    />
+                                }
                             />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                id="precio"
+                                name="precio"
+                                label="Precio"
+                                type="text"
+                                inputProps={{ maxLength: 20 }}
+                                value={formik.values.precio}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.precio && Boolean(formik.errors.precio)}
+                                helperText={formik.touched.precio && formik.errors.precio}
+                            />
+                            <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>Valor venta del dolar tarjeta actual: {valorDolar}</Typography>
                             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Agregar presupuesto</Button>
+                            <Typography variant="body2" sx={{ mt: 2 }}>
+                                Nota: El valor del dólar utilizado es proporcionado por{' '}
+                                <Link href="https://dolarapi.com/docs/" target="_blank" rel="noopener noreferrer">
+                                    dolarapi.com
+                                </Link>
+                            </Typography>
                         </Box>
                     </Paper>
                 </Grid>
