@@ -1,5 +1,5 @@
-import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Button, Container, FormControlLabel, IconButton, InputAdornment, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridSearchIcon } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { useNotification } from "../../context/notification.context";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
             width: 200,
             editable: false,
             renderCell: (params) => (
-                <Button variant="contained" onClick={() => {
+                <Button variant="contained" color="warning" onClick={() => {
                     navigate('/detalle_presupuesto', { state: { numeroPresupuesto: params.value } });
                 }}>
                     {params.value}
@@ -83,6 +83,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
         },
     ];
     const [busqueda, setBusqueda] = useState('');
+    const [busquedaTemporal, setBusquedaTemporal] = useState('');
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
     const { getSuccess, getError } = useNotification();
@@ -147,12 +148,31 @@ export const PresupuestoPage: React.FC<{}> = () => {
                 </Stack>
             </Paper>
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-                <TextField
+                {/* <TextField
                     label="Buscar presupuesto"
                     variant="outlined"
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
-                />
+                /> */}
+                <Stack direction="row" spacing={0}>
+                    <TextField
+                        label="Buscar presupuesto"
+                        variant="outlined"
+                        onChange={(e) => setBusquedaTemporal(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => setBusqueda(busquedaTemporal)}>
+                                        <GridSearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Stack>
+                <Stack direction="row" spacing={0}>
+                    <FormControlLabel control={<Switch color="info" />} label="Solo mostrar presupuestos remitidos" />
+                </Stack>
                 <Stack direction="row" spacing={2}>
                     <TextField
                         label="Desde fecha"

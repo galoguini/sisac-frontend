@@ -46,11 +46,11 @@ export const NavBar: React.FC<{}> = () => {
                                 <Stack direction="row" spacing={2}>
                                     {!isAuthenticated ? (
                                         <>
-                                            <Button variant="contained" onClick={() => navigate("/")} size="large" startIcon={<Home />}>SIBAC</Button>
+                                            <Button variant="contained" onClick={() => navigate("/")} size="large" startIcon={<Home />}>SISAC</Button>
                                         </>
                                     ) : (
                                         <>
-                                            <Button variant="contained" onClick={() => navigate("/")} size="small" startIcon={<Home />}>SIBAC</Button>
+                                            <Button variant="contained" onClick={() => navigate("/")} size="small" startIcon={<Home />}>SISAC</Button>
                                             <Button variant="outlined" aria-controls="simple-menu" aria-haspopup="true" size="large" onClick={handleClick}>
                                                 Ventas
                                             </Button>

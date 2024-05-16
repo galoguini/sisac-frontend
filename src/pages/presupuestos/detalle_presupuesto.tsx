@@ -1,4 +1,4 @@
-import { Container, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Button, Container, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getDetallePresupuesto } from "../../api/presupuestos";
@@ -59,6 +59,16 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                         value={presupuesto.observaciones}
                         InputProps={{ readOnly: true }}
                     />
+                </Grid>
+                <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
+                    <Stack direction="row" spacing={2}>
+                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Imprimir presupuesto</Button>
+                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar presupuesto por email</Button>
+                    </Stack>
+                    <Stack direction="row" spacing={2}>
+                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Imprimir remito</Button>
+                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar remito por email</Button>
+                    </Stack>
                 </Grid>
             </Paper>
         </Container>
