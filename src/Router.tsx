@@ -13,7 +13,7 @@ import { EmpresaPage } from "./pages/empresas/empresa";
 import { EmpresaProvisionalPage } from "./pages/empresas/empresa provisional";
 import { AgregarProductoPage } from "./pages/productos/agregar_productos";
 import { AgregarClientesPage } from "./pages/clientes/agregar_clientes";
-import { AgregarPresupuestoPage } from "./pages/presupuestos/agregar_presupuestos";
+import { AgregarPresupuestoPage } from "./pages/presupuestos/agregar_presupuesto";
 import { DetallePresupuestoPage } from "./pages/presupuestos/detalle_presupuesto";
 import { Empresa1Page } from "./pages/empresas/empresa1";
 

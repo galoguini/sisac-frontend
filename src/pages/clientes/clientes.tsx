@@ -167,6 +167,9 @@ export const ClientePage: React.FC<{}> = () => {
                 <DataGrid sx={{ mt: 2 }}
                     rows={clientes}
                     columns={columns}
+                    localeText={{
+                        noRowsLabel: '',
+                    }}
                     initialState={{
                         pagination: {
                             paginationModel: {

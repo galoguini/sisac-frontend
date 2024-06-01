@@ -1,19 +1,26 @@
 import Cookies from "js-cookie";
 import { apiURL } from "./base.api";
 
-export const agregarPresupuesto = async (cliente: string, fecha: string, vencimiento: string, moneda: string, cantidad: number, precio: string, observaciones: string, producto: string) => {
+export const agregarPresupuesto = async (cliente: any, fecha: string, vencimiento: string, moneda: string, observaciones: string, productos: { producto: any, cantidad: number, precio: number }[]) => {
     try {
         const token = Cookies.get('authToken');
-        const response = await apiURL.post("presupuestos/agregar/", { cliente, fecha, vencimiento, moneda, cantidad, precio, observaciones, producto }, {
+        const productosData = productos.map(producto => (
+            {
+            producto: producto.producto.id,
+            cantidad: producto.cantidad,
+            precio: producto.precio
+        }));
+        const response = await apiURL.post("presupuestos/agregar/", { cliente, fecha, vencimiento, moneda, observaciones, productos: productosData }, {
             headers: {
                 Authorization: `Token ${token}`
             }
         });
+
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         throw error;
     }
-}
+};
 
 export const getPresupuestos = async (palabra_clave: string, fecha_inicio: string, fecha_fin: string) => {
     try {
@@ -33,7 +40,7 @@ export const eliminarPresupuesto = async (numero_presupuesto: number) => {
     try {
         const token = Cookies.get('authToken');
         const response = await apiURL.delete(`presupuestos/eliminar/${numero_presupuesto}/`, {
-            headers: {  
+            headers: {
                 Authorization: `Token ${token}`
             }
         });

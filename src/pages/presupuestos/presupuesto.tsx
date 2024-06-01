@@ -5,6 +5,12 @@ import { useNotification } from "../../context/notification.context";
 import { useNavigate } from "react-router-dom";
 import { eliminarPresupuesto, getPresupuestos } from "../../api/presupuestos";
 
+type ProductoType = {
+    producto: number,
+    cantidad: number,
+    precio: number
+}
+
 type PresupuestoType = {
     id: number;
     numero_presupuesto: number;
@@ -12,18 +18,30 @@ type PresupuestoType = {
     fecha: string;
     vencimiento: string;
     moneda: string;
-    cantidad: number;
-    precio: number;
     observaciones: string;
-    producto: string;
+    producto: ProductoType | null;
+};
+
+const sumarPreciosProductos = (productos: ProductoType[]) => {
+    return productos.reduce((total, producto) => {
+        return total + producto.precio * producto.cantidad;
+    }, 0);
+};
+
+const calcularTotalPresupuesto = (presupuesto: any) => {
+    if (presupuesto.productos && presupuesto.productos.length > 0) {
+        return sumarPreciosProductos(presupuesto.productos);
+    }
+    return 0;
 };
 
 export const PresupuestoPage: React.FC<{}> = () => {
+    const [presupuestos, setPresupuestos] = useState<PresupuestoType[]>([]);
     const columns: GridColDef<PresupuestoType>[] = [
         {
             field: "numero_presupuesto",
-            headerName: "Número de presupuesto",
-            width: 200,
+            headerName: "nro. presupuesto",
+            width: 121,
             editable: false,
             renderCell: (params) => (
                 <Button variant="contained" color="warning" onClick={() => {
@@ -36,13 +54,13 @@ export const PresupuestoPage: React.FC<{}> = () => {
         {
             field: "fecha",
             headerName: "Fecha",
-            width: 100,
+            width: 101,
             editable: false,
         },
         {
             field: "vencimiento",
             headerName: "Vencimiento",
-            width: 150,
+            width: 101,
             editable: false,
         },
         {
@@ -54,31 +72,22 @@ export const PresupuestoPage: React.FC<{}> = () => {
         {
             field: "moneda",
             headerName: "Moneda",
-            width: 150,
+            width: 61,
             editable: false,
         },
         {
-            field: "precio",
-            headerName: "Precio",
-            width: 150,
+            field: "",
+            headerName: "Monto total",
+            width: 160,
             editable: false,
+            renderCell: (params) => (
+                <span>{calcularTotalPresupuesto(params.row).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2 })}</span>
+            ),
         },
         {
             field: "observaciones",
             headerName: "Observaciones",
-            width: 200,
-            editable: false,
-        },
-        {
-            field: "cantidad",
-            headerName: "Cantidad",
-            width: 150,
-            editable: false,
-        },
-        {
-            field: "producto",
-            headerName: "Producto",
-            width: 300,
+            width: 500,
             editable: false,
         },
     ];
@@ -88,7 +97,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
     const [fechaFin, setFechaFin] = useState('');
     const { getSuccess, getError } = useNotification();
     const navigate = useNavigate();
-    const [presupuestos, setPresupuestos] = useState<PresupuestoType[]>([]);
+
     const [idPresupuestoAEliminar, setIdPresupuestoAEliminar] = useState('');
 
     const cargarPresupuestos = async () => {
@@ -211,6 +220,9 @@ export const PresupuestoPage: React.FC<{}> = () => {
                 <DataGrid sx={{ mt: 2 }}
                     rows={presupuestos}
                     columns={columns}
+                    localeText={{
+                        noRowsLabel: '',
+                    }}
                     initialState={{
                         pagination: {
                             paginationModel: {
@@ -220,6 +232,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
                     }}
                     pageSizeOptions={[20]}
                     disableRowSelectionOnClick
+                    disableColumnResize
                 />
             </Paper>
         </Container>

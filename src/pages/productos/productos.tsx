@@ -153,6 +153,9 @@ export const ProductoPage: React.FC<{}> = () => {
                 <DataGrid sx={{ mt: 2 }}
                     rows={productos}
                     columns={columns}
+                    localeText={{
+                        noRowsLabel: '',
+                    }}
                     initialState={{
                         pagination: {
                             paginationModel: {

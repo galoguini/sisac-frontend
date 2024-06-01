@@ -3,7 +3,7 @@ import * as yup from 'yup';
 export const clientesValidate = yup.object().shape({
     nombre_apellido: yup.string().required('El nombre y apellido es requerido'),
     tipo_identificacion: yup.string().required('El tipo de identificación es requerido'),
-    numero_identificacion: yup.string().required('El número de identificación es requerido'),
+    numero_identificacion: yup.string(),
     otro_identificacion: yup.string().required('El otro identificación es requerido'),
     condicion_iva: yup.string().required('La condición IVA es requerida'),
     pais: yup.string().required('El país es requerido'),

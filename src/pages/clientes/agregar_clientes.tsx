@@ -30,6 +30,7 @@ export const AgregarClientesPage: React.FC<{}> = () => {
         'DNI',
         'PASAPORTE',
         'OTRO',
+        'NO ESPECIFICADO'
     ]
 
     const CONDICION = [
@@ -76,7 +77,7 @@ export const AgregarClientesPage: React.FC<{}> = () => {
             <Grid container direction="column" alignItems="center" justifyContent="center" sx={{ minHeight: "50vh" }}>
                 <Grid item>
                     <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
-                        <Typography variant="h4">Agregar producto</Typography>
+                        <Typography variant="h4">Agregar cliente</Typography>
                         <Box component="form" onSubmit={formik.handleSubmit}>
                             <TextField
                                 fullWidth
@@ -128,18 +129,20 @@ export const AgregarClientesPage: React.FC<{}> = () => {
                                     helperText={formik.touched.otro_identificacion && formik.errors.otro_identificacion}
                                 />
                             )}
-                            <TextField
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                                label="Número de identificación"
-                                name="numero_identificacion"
-                                value={formik.values.numero_identificacion}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.numero_identificacion && Boolean(formik.errors.numero_identificacion)}
-                                helperText={formik.touched.numero_identificacion && formik.errors.numero_identificacion}
-                            />
+                            {formik.values.tipo_identificacion !== 'NO ESPECIFICADO' && (
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    label="Número de identificación"
+                                    name="numero_identificacion"
+                                    value={formik.values.numero_identificacion}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.numero_identificacion && Boolean(formik.errors.numero_identificacion)}
+                                    helperText={formik.touched.numero_identificacion && formik.errors.numero_identificacion}
+                                />
+                            )}
                             <TextField
                                 fullWidth
                                 margin="normal"
