@@ -7,11 +7,9 @@ const subtitulo = 16;
 const texto = 10;
 const header_tabla = 8;
 const contenido_tabla = 8;
-const columnas_articulo = '35%';
-const columnas_observacion = '26%';
-const columnas_cantidad = '9%';
-const columnas_precio = '15%';
-const columnas_importe = '15%';
+const columnas_articulo = '40%';
+const columnas_observacion = '40%';
+const columnas_cantidad = '20%';
 
 const styles = StyleSheet.create({
     page: {
@@ -20,7 +18,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Helvetica',
     },
     header: {
-        marginBottom: 20,
+        marginBottom: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
@@ -33,7 +31,7 @@ const styles = StyleSheet.create({
         width: '33%',
     },
     headerRight: {
-        textAlign: 'right',
+        textAlign: 'left',
         width: '33%',
     },
     title: {
@@ -50,11 +48,6 @@ const styles = StyleSheet.create({
         border: '1px solid #bfbfbf',
         borderRadius: 5,
     },
-    sectionTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
     table: {
         width: 'auto',
         borderStyle: 'solid',
@@ -66,18 +59,6 @@ const styles = StyleSheet.create({
     tableRow: {
         margin: 'auto',
         flexDirection: 'row',
-    },
-    totalSection: {
-        marginTop: 20,
-        textAlign: 'right',
-    },
-    totalText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    observations: {
-        marginTop: 10,
-        fontSize: 8,
     },
     tableColHeaderArticulo: {
         width: columnas_articulo,
@@ -124,36 +105,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    tableColHeaderPrecio: {
-        width: columnas_precio,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#bfbfbf',
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
-        backgroundColor: '#e0e0e0',
-    },
-    tableCellHeaderPrecio: {
-        margin: 5,
-        fontSize: header_tabla,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    tableColHeaderImporte: {
-        width: columnas_importe,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#bfbfbf',
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
-        backgroundColor: '#e0e0e0',
-    },
-    tableCellHeaderImporte: {
-        margin: 5,
-        fontSize: header_tabla,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
     tableColArticulo: {
         width: columnas_articulo,
         borderStyle: 'solid',
@@ -191,40 +142,61 @@ const styles = StyleSheet.create({
     tableCellCantidad: {
         margin: 5,
         fontSize: contenido_tabla,
-        textAlign: 'right',
+        textAlign: 'center',
     },
-    tableColPrecio: {
-        width: columnas_precio,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#bfbfbf',
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5,
     },
-    tableCellPrecio: {
-        margin: 5,
-        fontSize: contenido_tabla,
-        textAlign: 'right',
+    observations: {
+        marginTop: 10,
+        fontSize: 8,
     },
-    tableColImporte: {
-        width: columnas_importe,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#bfbfbf',
-        borderLeftWidth: 0,
-        borderTopWidth: 0,
-    },
-    tableCellImporte: {
-        margin: 5,
-        fontSize: contenido_tabla,
-        textAlign: 'right',
-    },
-    presupuestoDatos: {
+    remitoDatos: {
         textAlign: 'right',
         marginTop: 10,
     },
     empresaDireccion: {
         textAlign: 'left',
+    },
+    xText: {
+        fontSize: 50,
+        fontWeight: 'bold',
+    },
+    invalidDocText: {
+        fontSize: 8,
+        fontWeight: 'bold',
+    },
+    // footer: {
+    //     marginTop: 20,
+    //     textAlign: 'center',
+    //     fontSize: 12,
+    // },
+    footer: {
+        marginTop: 20,
+        textAlign: 'right', // Cambiado a 'right' para alinear a la derecha
+        fontSize: 12,
+        position: 'absolute', // Asegura que esté en la parte inferior de la página
+        bottom: 30,
+        right: 30,
+    },
+    footerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Distribuye el espacio entre los elementos
+        marginTop: 5,
+        width: '100%',
+    },
+    footerItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    footerText: {
+        marginRight: 10,
+    },
+    footerLine: {
+        borderBottom: '1px solid black',
+        width: 150,
     },
 });
 
@@ -233,7 +205,6 @@ interface Props {
 }
 
 const PlantillaPDF: React.FC<Props> = ({ data }) => (
-    console.log(data),
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.header}>
@@ -243,14 +214,16 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                         <Text>{data.empresa.direccion},{data.empresa.localidad},{data.empresa.provincia}</Text>
                     </View>
                 </View>
-                <View style={[styles.headerCenter, { justifyContent: 'flex-end' }]}>
+                <View style={styles.headerCenter}>
+                    <Text style={styles.invalidDocText}>Documento no válido como factura</Text>
+                    <Text style={styles.xText}>X</Text>
                     <Text style={styles.page}>{data.empresa.categoria_fiscal}</Text>
                 </View>
                 <View style={styles.headerRight}>
-                    <Text style={[styles.subtitle, { textAlign: "left" }]}>PRESUPUESTO</Text>
-                    <View style={[styles.presupuestoDatos, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                    <Text style={[styles.subtitle, { textAlign: "left" }]}>REMITO</Text>
+                    <View style={[styles.remitoDatos, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                         <View>
-                            <Text>Nro:</Text>
+                            <Text>Número:</Text>
                             <Text>Fecha:</Text>
                             <Text>CUIT:</Text>
                             <Text>Ing. Brutos:</Text>
@@ -268,13 +241,9 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
             </View>
             <View style={styles.section}>
                 <Text>Sr. (es): {data.cliente.nombre_apellido}</Text>
-                <Text>Domicilio: {data.cliente.pais}, {data.cliente.provincia}, {data.cliente.localidad}, {data.cliente.domicilio}</Text>
-                <Text>{data.cliente.tipo_identificacion}: {data.cliente.numero_identificacion}</Text>
+                <Text>Domicilio: {data.cliente.domicilio}, {data.cliente.localidad}, {data.cliente.provincia}, {data.cliente.pais}</Text>
+                <Text>CUIT: {data.cliente.numero_identificacion}</Text>
                 <Text>Cond. IVA: {data.cliente.condicion_iva}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text>Moneda: {data.moneda}</Text>
-                <Text>Fecha Vto.: {data.fechaVencimiento}</Text>
             </View>
             <View style={styles.table}>
                 <View style={styles.tableRow}>
@@ -287,14 +256,7 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                     <View style={styles.tableColHeaderCantidad}>
                         <Text style={styles.tableCellHeaderCantidad}>Cantidad</Text>
                     </View>
-                    <View style={styles.tableColHeaderPrecio}>
-                        <Text style={styles.tableCellHeaderPrecio}>Precio</Text>
-                    </View>
-                    <View style={styles.tableColHeaderImporte}>
-                        <Text style={styles.tableCellHeaderImporte}>Importe</Text>
-                    </View>
                 </View>
-                {/* Table Rows */}
                 {data.items.map((item, index) => (
                     <View style={styles.tableRow} key={index}>
                         <View style={styles.tableColArticulo}>
@@ -306,23 +268,27 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                         <View style={styles.tableColCantidad}>
                             <Text style={styles.tableCellCantidad}>{item.cantidad}</Text>
                         </View>
-                        <View style={styles.tableColPrecio}>
-                            <Text style={styles.tableCellPrecio}>{Number(item.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</Text>
-                        </View>
-                        <View style={styles.tableColImporte}>
-                            <Text style={styles.tableCellImporte}>{item.importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</Text>
-                        </View>
                     </View>
                 ))}
-            </View>
-            <View style={styles.totalSection}>
-                <Text style={styles.totalText}>Total: {data.total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</Text>
             </View>
             <View style={styles.observations}>
                 <Text>Observaciones:</Text>
                 {data.observaciones.map((obs, index) => (
                     <Text key={index}>{obs}</Text>
                 ))}
+            </View>
+            <View style={styles.footer}>
+                <Text>Recibí Conforme</Text>
+                <View style={styles.footerRow}>
+                    <View style={styles.footerItem}>
+                        <Text style={styles.footerText}>Firma:</Text>
+                        <View style={styles.footerLine}></View>
+                    </View>
+                    <View style={styles.footerItem}>
+                        <Text style={styles.footerText}>Aclaración:</Text>
+                        <View style={styles.footerLine}></View>
+                    </View>
+                </View>
             </View>
         </Page>
     </Document>

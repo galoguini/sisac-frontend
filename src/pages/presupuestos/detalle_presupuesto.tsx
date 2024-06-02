@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getDetallePresupuesto } from "../../api/presupuestos";
 import { PDFViewer } from "@react-pdf/renderer";
-import PresupuestoPDF from "../../components/plantilla_pdf";
+import PresupuestoPDF from "../../components/presupuesto_pdf";
+import RemitoPDF from "../../components/remito_pdf";
 import { getEmpresa } from "../../api/empresa";
 import { getClientes } from "../../api/clientes";
 import { PresupuestoData } from "../../types/PresupuestoData";
@@ -96,6 +97,17 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         setOpen(false);
     };
 
+    const [openRemito, setOpenRemito] = React.useState(false);
+
+    const handleClickOpenRemito = async () => {
+        await obtenerInfoPDF();
+        setOpenRemito(true);
+    };
+
+    const handleCloseRemito = () => {
+        setOpenRemito(false);
+    };
+
     let monedaTexto;
     if (presupuesto.moneda === "ARS") {
         monedaTexto = "Pesos Argentinos";
@@ -166,11 +178,12 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                         <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar presupuesto por email</Button>
                     </Stack>
                     <Stack direction="row" spacing={2}>
-                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Imprimir remito</Button>
+                        <Button variant="contained" color="primary" onClick={handleClickOpenRemito}>Imprmir remito</Button>
                         <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar remito por email</Button>
                     </Stack>
                 </Grid>
             </Paper>
+            
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
                 <DialogContent>
                     <PDFViewer style={{ width: '100%', height: '80vh' }}>
@@ -183,6 +196,20 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog open={openRemito} onClose={handleCloseRemito} fullWidth maxWidth="xl">
+                <DialogContent>
+                    <PDFViewer style={{ width: '100%', height: '80vh' }}>
+                        <RemitoPDF data={data} />
+                    </PDFViewer>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseRemito} variant="contained" color="error">
+                        Salir
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             {presupuesto.productos.map((producto, index) => (
                 <Paper key={index} sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', flexDirection: 'column', mt: 2 }}>
                     <Typography variant="h6" align="left">Producto {index + 1}</Typography>
