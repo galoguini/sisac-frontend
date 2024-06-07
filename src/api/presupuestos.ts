@@ -1,14 +1,15 @@
 import Cookies from "js-cookie";
 import { apiURL } from "./base.api";
 
-export const agregarPresupuesto = async (cliente: any, fecha: string, vencimiento: string, moneda: string, observaciones: string, productos: { producto: any, cantidad: number, precio: number }[]) => {
+export const agregarPresupuesto = async (cliente: any, fecha: string, vencimiento: string, moneda: string, observaciones: string, productos: { producto: any, cantidad: number, precio: number, descripcion: string }[]) => {
     try {
         const token = Cookies.get('authToken');
         const productosData = productos.map(producto => (
             {
             producto: producto.producto.id,
             cantidad: producto.cantidad,
-            precio: producto.precio
+            precio: producto.precio,
+            descripcion: producto.descripcion
         }));
         const response = await apiURL.post("presupuestos/agregar/", { cliente, fecha, vencimiento, moneda, observaciones, productos: productosData }, {
             headers: {

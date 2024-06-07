@@ -13,6 +13,7 @@ type Producto = {
     producto: string;
     cantidad: number;
     precio: number;
+    descripcion: string;
 };
 
 type Presupuesto = {
@@ -61,6 +62,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         cuit: "",
         nro_ingresos_brutos: "",
         fecha_inicio_actividad: "",
+        pais: "",
         direccion: "",
         provincia: "",
         localidad: "",
@@ -78,7 +80,6 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
 
     const detallePresupuesto = async () => {
         const data = await getDetallePresupuesto(numeroPresupuesto);
-        console.log(JSON.stringify(data));
         setPresupuesto(data);
     }
 
@@ -124,7 +125,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         fechaVencimiento: presupuesto.vencimiento,
         items: presupuesto.productos.map((prod) => ({
             nombre: prod.producto,
-            descripcion: prod.producto,
+            descripcion: prod.descripcion,
             cantidad: prod.cantidad,
             precio: prod.precio,
             importe: prod.cantidad * prod.precio,
@@ -225,6 +226,14 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                             <TextField
                                 label="Importe"
                                 value={(producto.cantidad * producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
+                                InputProps={{ readOnly: true }}
+                            />
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={4}
+                                label="Descripción"
+                                value={producto.descripcion}
                                 InputProps={{ readOnly: true }}
                             />
                         </Grid>

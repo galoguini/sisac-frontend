@@ -240,7 +240,14 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                 <View style={styles.headerLeft}>
                     <Text style={styles.title}>{data.empresa.nombre_empresa}</Text>
                     <View style={styles.empresaDireccion}>
-                        <Text>{data.empresa.direccion},{data.empresa.localidad},{data.empresa.provincia}</Text>
+                        <Text style={{ fontSize: 8 }}>
+                            {data.empresa.direccion && `${data.empresa.direccion}, `}
+                            {data.empresa.localidad && `${data.empresa.localidad},`}
+                        </Text>
+                        <Text style={{ fontSize: 8 }}>
+                            {data.empresa.provincia && `${data.empresa.provincia}, `}
+                            {data.empresa.pais}.
+                        </Text>
                     </View>
                 </View>
                 <View style={styles.headerCenter}>
@@ -259,23 +266,37 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                         </View>
                         <View>
                             <Text>{data.numero}</Text>
-                            <Text>{data.fecha}</Text>
-                            <Text>{data.empresa.cuit}</Text>
+                            <Text>{data.fecha.replace(/-/g, '/')}</Text>
+                            <Text>
+                                {data.empresa.cuit.slice(0, 2) + '-' + data.empresa.cuit.slice(2, 10) + '-' + data.empresa.cuit.slice(10)}
+                            </Text>
                             <Text>{data.empresa.nro_ingresos_brutos}</Text>
-                            <Text>{data.empresa.fecha_inicio_actividad}</Text>
+                            <Text>{data.empresa.fecha_inicio_actividad.replace(/-/g, '/')}</Text>
                         </View>
                     </View>
                 </View>
             </View>
             <View style={styles.section}>
                 <Text>Sr. (es): {data.cliente.nombre_apellido}</Text>
-                <Text>Domicilio: {data.cliente.pais}, {data.cliente.provincia}, {data.cliente.localidad}, {data.cliente.domicilio}</Text>
-                <Text>{data.cliente.tipo_identificacion}: {data.cliente.numero_identificacion}</Text>
+                <Text>
+                    Domicilio: {data.cliente.domicilio && `${data.cliente.domicilio}, `}
+                    {data.cliente.localidad && `${data.cliente.localidad}, `}
+                    {data.cliente.provincia && `${data.cliente.provincia}, `}
+                    {data.cliente.pais}
+                </Text>
+                <Text>Identificación:
+                    {data.cliente.tipo_identificacion === 'NO ESPECIFICADO'
+                        ? 'NO ESPECIFICADO'
+                        : data.cliente.tipo_identificacion === 'OTRO'
+                            ? `${data.cliente.otro_identificacion}: ${data.cliente.numero_identificacion}`
+                            : `${data.cliente.tipo_identificacion}: ${data.cliente.numero_identificacion}`
+                    }
+                </Text>
                 <Text>Cond. IVA: {data.cliente.condicion_iva}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text>Moneda: {data.moneda}</Text>
-                <Text>Fecha Vto.: {data.fechaVencimiento}</Text>
+                <Text>Fecha Vto.: {data.fechaVencimiento.replace(/-/g, '/')}</Text>
             </View>
             <View style={styles.table}>
                 <View style={styles.tableRow}>

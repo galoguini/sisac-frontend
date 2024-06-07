@@ -14,6 +14,7 @@ type EmpresaType = {
     cuit: string;
     nro_ingresos_brutos: string;
     fecha_inicio_actividad: string;
+    pais: string;
     direccion: string;
     provincia: string;
     localidad: string;
@@ -48,6 +49,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
             cuit: '',
             nro_ingresos_brutos: '',
             fecha_inicio_actividad: '',
+            pais: '',
             direccion: '',
             provincia: '',
             localidad: '',
@@ -61,7 +63,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                 const fecha = new Date(values.fecha_inicio_actividad);
                 const fechaInicioActividadFormateada = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth()+1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
         
-                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
+                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.pais, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
                 getSuccess("Empresa agregada exitosamente");
                 await seleccionarEmpresa();
                 navigate('/');
@@ -185,6 +187,17 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
+                            />
+                            <TextField name="pais"
+                                margin="normal"
+                                type="text"
+                                fullWidth
+                                label="País"
+                                value={formik.values.pais}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.pais && Boolean(formik.errors.pais)}
+                                helperText={formik.touched.pais && formik.errors.pais}
                             />
                             <TextField name="direccion"
                                 margin="normal"

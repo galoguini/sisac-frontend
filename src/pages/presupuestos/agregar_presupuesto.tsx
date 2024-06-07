@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../context/notification.context";
-import { useFormik } from "formik";
+import { FormikErrors, useFormik } from "formik";
 import { PresupuestoValidate } from "../../utils/presupuestosForm";
 import { agregarPresupuesto } from "../../api/presupuestos";
 import { Link, Autocomplete, Box, Button, Container, Grid, MenuItem, Paper, TextField, Typography, InputAdornment, Stack } from "@mui/material";
@@ -37,6 +37,7 @@ type ProductoType = {
     producto: ProductosType | null,
     cantidad: number,
     precio: number
+    descripcion: string
 }
 
 type ClienteType = {
@@ -92,7 +93,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
             moneda: '',
             observaciones: '',
             productos: [
-                { producto: null, precio: 0, cantidad: 1 }
+                { producto: null, precio: 0, cantidad: 1, descripcion: '' }
             ],
         },
         validationSchema: PresupuestoValidate,
@@ -107,7 +108,8 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                 const productosMapeados = productosValidados.map(producto => ({
                     producto: producto.producto,
                     cantidad: producto.cantidad,
-                    precio: producto.precio
+                    precio: producto.precio,
+                    descripcion: producto.descripcion
                 }));
 
                 const fecha = new Date(values.fecha);
@@ -128,6 +130,12 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
             }
         }
     });
+
+    const isFormikErrorObject = (
+        value: any
+    ): value is FormikErrors<ProductoType> => {
+        return value && typeof value === 'object' && !Array.isArray(value);
+    };
 
     return (
         <Container sx={{ mt: 9 }} maxWidth="sm">
@@ -251,11 +259,8 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                         </Paper>
 
                         {formik.values.productos.map((producto, index) => (
-                            <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", mt: 2 }}>
-                                <Box
-                                    display="flex"
-                                    justifyContent="flex-end"
-                                >
+                            <Paper key={index} sx={{ padding: "1.2em", borderRadius: "0.5em", mt: 2 }}>
+                                <Box display="flex" justifyContent="flex-end">
                                     <Button
                                         variant="contained"
                                         color="secondary"
@@ -284,19 +289,27 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                             }
                                             formik.setFieldValue(`productos[${index}].producto`, newValue);
                                             formik.setFieldValue(`productos[${index}].precio`, nuevoPrecio.toString());
+                                            formik.setFieldValue(`productos[${index}].descripcion`, newValue.observaciones); // Línea agregada
                                         }
                                     }}
                                     isOptionEqualToValue={(option, value) => option.nombre === value.nombre}
-                                    renderInput={(params) =>
-                                        <TextField
-                                            {...params}
-                                            label="Producto"
-                                            margin="normal"
-                                            onBlur={formik.handleBlur}
-                                            error={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && Boolean(formik.errors.productos[index].producto)}
-                                            helperText={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && formik.errors.productos[index].producto}
-                                        />
-                                    }
+                                    renderInput={(params) => {
+                                        const touchedProductos = formik.touched.productos as Array<any> | undefined;
+                                        const errorsProductos = formik.errors.productos as Array<any> | undefined;
+                                        const isTouched = touchedProductos && touchedProductos[index];
+                                        const isErrored = errorsProductos && errorsProductos[index] && isFormikErrorObject(errorsProductos[index]);
+
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                label="Producto"
+                                                margin="normal"
+                                                onBlur={formik.handleBlur}
+                                                error={Boolean(isTouched && isErrored && errorsProductos[index].producto)}
+                                                helperText={isTouched && isErrored && errorsProductos[index].producto ? errorsProductos[index].producto : undefined}
+                                            />
+                                        );
+                                    }}
                                 />
                                 <TextField
                                     fullWidth
@@ -313,10 +326,25 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                     }}
                                     value={producto.precio}
                                     onChange={formik.handleChange}
-                                    error={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && Boolean(formik.errors.productos[index].precio)}
-                                    helperText={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && formik.errors.productos[index].precio}
-                                />
+                                    error={
+                                        Array.isArray(formik.touched.productos) &&
+                                        formik.touched.productos[index] &&
+                                        Array.isArray(formik.errors.productos) &&
+                                        isFormikErrorObject(formik.errors.productos[index]) &&
+                                        (formik.errors.productos[index] as FormikErrors<ProductoType>).precio !== undefined
+                                    }
 
+                                    helperText={
+                                        Array.isArray(formik.touched.productos) &&
+                                            formik.touched.productos[index] &&
+                                            Array.isArray(formik.errors.productos) &&
+                                            isFormikErrorObject(formik.errors.productos[index]) &&
+                                            (formik.errors.productos[index] as FormikErrors<ProductoType>).precio !== undefined
+                                            ? (formik.errors.productos[index] as FormikErrors<ProductoType>).precio
+                                            : undefined
+                                    }
+
+                                />
                                 <Stack direction="row" spacing={2} justifyContent="space-between">
                                     <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>
                                         *valor a pesos ya convertido
@@ -337,33 +365,80 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                                     value={producto.cantidad}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && Boolean(formik.errors.productos[index].cantidad)}
-                                    helperText={formik.touched.productos && Boolean(formik.errors.productos) && Boolean(formik.errors.productos[index]) && formik.errors.productos[index].cantidad}
+                                    error={
+                                        Array.isArray(formik.touched.productos) &&
+                                            formik.touched.productos[index] &&
+                                            Array.isArray(formik.errors.productos) &&
+                                            formik.errors.productos[index] &&
+                                            isFormikErrorObject(formik.errors.productos[index] as FormikErrors<ProductoType>) &&
+                                            'cantidad' in (formik.errors.productos[index] as FormikErrors<ProductoType>)
+                                            ? (formik.errors.productos[index] as FormikErrors<ProductoType>).cantidad !== ""
+                                            : false
+                                    }
+
+                                    helperText={
+                                        Array.isArray(formik.touched.productos) &&
+                                            formik.touched.productos[index] &&
+                                            Array.isArray(formik.errors.productos) &&
+                                            formik.errors.productos[index] &&
+                                            isFormikErrorObject(formik.errors.productos[index] as FormikErrors<ProductoType>) &&
+                                            'cantidad' in (formik.errors.productos[index] as FormikErrors<ProductoType>)
+                                            ? (formik.errors.productos[index] as FormikErrors<ProductoType>).cantidad
+                                            : undefined
+                                    }
+
+                                />
+                                <TextField
+                                    fullWidth
+                                    margin="normal"
+                                    id={`productos[${index}].descripcion`}
+                                    name={`productos[${index}].descripcion`}
+                                    label="Descripción"
+                                    multiline
+                                    rows={4}
+                                    value={producto.descripcion}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={
+                                        Array.isArray(formik.touched.productos) &&
+                                            formik.touched.productos[index] &&
+                                            Array.isArray(formik.errors.productos) &&
+                                            formik.errors.productos[index] &&
+                                            isFormikErrorObject(formik.errors.productos[index] as FormikErrors<ProductoType>) &&
+                                            'descripcion' in (formik.errors.productos[index] as FormikErrors<ProductoType>)
+                                            ? (formik.errors.productos[index] as FormikErrors<ProductoType>).descripcion !== ""
+                                            : false
+                                    }
+
+                                    helperText={
+                                        Array.isArray(formik.touched.productos) &&
+                                            formik.touched.productos[index] &&
+                                            Array.isArray(formik.errors.productos) &&
+                                            formik.errors.productos[index] &&
+                                            isFormikErrorObject(formik.errors.productos[index] as FormikErrors<ProductoType>) &&
+                                            'descripcion' in (formik.errors.productos[index] as FormikErrors<ProductoType>)
+                                            ? (formik.errors.productos[index] as FormikErrors<ProductoType>).descripcion
+                                            : undefined
+                                    }
                                 />
                             </Paper>
                         ))}
-                        <Box
-                            display="flex"
-                            alignItems="flex-start"
-                        >
+                        <Box display="flex" alignItems="flex-start">
                             <Button
                                 variant="contained"
                                 color="info"
                                 sx={{ mt: 1, fontSize: '16px' }}
                                 onClick={() => {
-                                    formik.setFieldValue('productos', [...formik.values.productos, { producto: null, precio: '', cantidad: 1 }]);
+                                    formik.setFieldValue('productos', [...formik.values.productos, { producto: null, precio: 0, cantidad: 1 }]);
                                 }}
                             >
                                 <AddIcon />
                             </Button>
                         </Box>
-
                         <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", mt: 2 }}>
-
                             <Typography sx={{ mb: 1, fontSize: '1.5rem', textAlign: 'left' }}>
                                 Monto total: {formik.values.moneda} {formik.values.productos.reduce((total, producto) => total + (producto.precio * producto.cantidad), 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                             </Typography>
-
                             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Agregar presupuesto</Button>
                             <Typography variant="body2" sx={{ mt: 2 }}>
                                 Nota: El valor del dólar utilizado es proporcionado por{' '}

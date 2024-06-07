@@ -11,6 +11,7 @@ export const Empresa1Page: React.FC<{}> = () => {
         cuit: "",
         nro_ingresos_brutos: "",
         fecha_inicio_actividad: "",
+        pais: "",
         direccion: "",
         provincia: "",
         localidad: "",
@@ -40,6 +41,7 @@ export const Empresa1Page: React.FC<{}> = () => {
                 <TextField fullWidth margin="normal" label="Nro. de ingresos brutos" value={empresa.nro_ingresos_brutos} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Fecha de inicio de actividad" value={empresa.fecha_inicio_actividad} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Dirección" value={empresa.direccion} InputProps={{ readOnly: true }} />
+                <TextField fullWidth margin="normal" label="País" value={empresa.pais} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Provincia" value={empresa.provincia} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Localidad" value={empresa.localidad} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Teléfono" value={empresa.telefono} InputProps={{ readOnly: true }} />

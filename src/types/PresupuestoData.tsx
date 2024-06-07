@@ -6,6 +6,7 @@ export interface Empresa {
     cuit: string;
     nro_ingresos_brutos: string;
     fecha_inicio_actividad: string;
+    pais: string;
     direccion: string;
     provincia: string;
     localidad: string;
