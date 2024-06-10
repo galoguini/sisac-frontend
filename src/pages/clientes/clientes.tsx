@@ -1,9 +1,9 @@
-import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Container, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNotification } from "../../context/notification.context";
 import { useNavigate } from "react-router-dom";
 import { eliminarCliente, getClientes } from "../../api/clientes";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridSearchIcon } from "@mui/x-data-grid";
 
 type ClienteType = {
     nombre_apellido: string;
@@ -101,6 +101,7 @@ export const ClientePage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const [clientes, setClientes] = useState<ClienteType[]>([]);
     const [idClienteAEliminar, setIdClienteAEliminar] = useState('');
+    const [busquedaTemporal, setBusquedaTemporal] = useState('');
 
     const cargarClientes = async () => {
         try {
@@ -142,12 +143,28 @@ export const ClientePage: React.FC<{}> = () => {
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between' }}>
-                <Stack direction="row" spacing={2}>
+                {/* <Stack direction="row" spacing={2}>
                     <TextField
                         label="Buscar cliente"
                         variant="outlined"
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </Stack> */}
+                <Stack direction="row" spacing={0}>
+                    <TextField
+                        label="Buscar cliente"
+                        variant="outlined"
+                        onChange={(e) => setBusquedaTemporal(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => setBusqueda(busquedaTemporal)}>
+                                        <GridSearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                 </Stack>
                 <Button variant="contained" color="success" onClick={() => navigate("/agregar_cliente")}>Agregar cliente</Button>

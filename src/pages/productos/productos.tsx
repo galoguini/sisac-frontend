@@ -1,5 +1,5 @@
-import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Button, Container, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridSearchIcon } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { eliminarProducto, getProductos } from "../../api/productos";
 import { useNavigate } from "react-router-dom";
@@ -88,6 +88,7 @@ export const ProductoPage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [idProductoAEliminar, setIdProductoAEliminar] = useState('');
+    const [busquedaTemporal, setBusquedaTemporal] = useState('');
 
     const cargarProductos = async () => {
         try {
@@ -103,14 +104,14 @@ export const ProductoPage: React.FC<{}> = () => {
 
     const handleEliminarProducto = async () => {
         const productoAEliminar = productos.find(producto => producto.id === Number(idProductoAEliminar));
-    
+
         if (!productoAEliminar) {
             getError('No se encontró el producto con el ID especificado');
             return;
         }
-    
+
         const confirmacion = window.confirm(`¿Estás seguro de que quieres eliminar el producto "${productoAEliminar.nombre}"?`);
-    
+
         if (confirmacion) {
             try {
                 await eliminarProducto(Number(idProductoAEliminar));
@@ -128,13 +129,29 @@ export const ProductoPage: React.FC<{}> = () => {
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between' }}>
-            <Stack direction="row" spacing={2}>
-                <TextField 
-                    label="Buscar producto" 
-                    variant="outlined" 
-                    value={busqueda} 
-                    onChange={(e) => setBusqueda(e.target.value)} 
-                />
+                {/* <Stack direction="row" spacing={2}>
+                    <TextField
+                        label="Buscar producto"
+                        variant="outlined"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                    />
+                </Stack> */}
+                <Stack direction="row" spacing={0}>
+                    <TextField
+                        label="Buscar producto"
+                        variant="outlined"
+                        onChange={(e) => setBusquedaTemporal(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => setBusqueda(busquedaTemporal)}>
+                                        <GridSearchIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Stack>
                 <Button variant="contained" color="success" onClick={() => navigate("/agregar_producto")}>Agregar producto</Button>
                 <Stack direction="row" spacing={2}>

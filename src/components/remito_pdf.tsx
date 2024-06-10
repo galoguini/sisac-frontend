@@ -174,29 +174,32 @@ const styles = StyleSheet.create({
     //     fontSize: 12,
     // },
     footer: {
-        marginTop: 20,
-        textAlign: 'right', // Cambiado a 'right' para alinear a la derecha
         fontSize: 12,
-        position: 'absolute', // Asegura que esté en la parte inferior de la página
+        position: 'absolute',
         bottom: 30,
+        left: 30,
         right: 30,
+        textAlign: 'left',
+    },
+    footerText: {
+        fontSize: 12,
+        marginTop: 5, // Margen para separar el texto de la línea
     },
     footerRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between', // Distribuye el espacio entre los elementos
-        marginTop: 5,
-        width: '100%',
+        justifyContent: 'space-between',
+        marginTop: 50, // Aumenta el margen superior para mayor separación
     },
     footerItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    footerText: {
-        marginRight: 10,
+        flexDirection: 'column', // Cambia la dirección a columna
+        alignItems: 'center', // Centra los elementos horizontalmente
+        width: '40%', // Ajusta el ancho para centrar los elementos en su respectiva sección
     },
     footerLine: {
-        borderBottom: '1px solid black',
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
         width: 150,
+        marginBottom: 5, // Margen para separar la línea del texto
     },
 });
 
@@ -299,15 +302,15 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                 ))}
             </View>
             <View style={styles.footer}>
-                <Text>Recibí Conforme</Text>
+                <Text style={styles.footerText}>Recibí Conforme</Text>
                 <View style={styles.footerRow}>
                     <View style={styles.footerItem}>
-                        <Text style={styles.footerText}>Firma:</Text>
                         <View style={styles.footerLine}></View>
+                        <Text style={styles.footerText}>Firma</Text>
                     </View>
                     <View style={styles.footerItem}>
-                        <Text style={styles.footerText}>Aclaración:</Text>
                         <View style={styles.footerLine}></View>
+                        <Text style={styles.footerText}>Aclaración</Text>
                     </View>
                 </View>
             </View>

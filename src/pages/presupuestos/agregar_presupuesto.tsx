@@ -118,7 +118,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
                 const vencimiento = new Date(values.vencimiento);
                 const vencimientoFormateado = `${vencimiento.getDate().toString().padStart(2, '0')}-${(vencimiento.getMonth() + 1).toString().padStart(2, '0')}-${vencimiento.getFullYear()}`;
 
-                await agregarPresupuesto(values.cliente?.nombre_apellido, fechaFormateada, vencimientoFormateado, values.moneda, values.observaciones, productosMapeados);
+                await agregarPresupuesto(values.cliente?.id, fechaFormateada, vencimientoFormateado, values.moneda, values.observaciones, productosMapeados);
                 getSuccess("Presupuesto agregado correctamente");
                 navigate('/presupuestos');
             } catch (error: any) {
