@@ -23,10 +23,24 @@ export const agregarPresupuesto = async (cliente: any, fecha: string, vencimient
     }
 };
 
-export const getPresupuestos = async (palabra_clave: string, fecha_inicio: string, fecha_fin: string) => {
+export const getPresupuestos = async (palabra_clave: string, fecha_inicio: string, fecha_fin: string, remitido: boolean) => {
     try {
         const token = Cookies.get('authToken');
-        const response = await apiURL.get(`presupuestos/listar/?palabra_clave=${palabra_clave}&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`, {
+        const response = await apiURL.get(`presupuestos/listar/?palabra_clave=${palabra_clave}&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}&remitido=${remitido}`, {
+            headers: {
+                Authorization: `Token ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const remitirPresupuesto = async (pk: number) => {
+    try {
+        const token = Cookies.get('authToken');
+        const response = await apiURL.put(`presupuestos/remitir/${pk}/`, {}, {
             headers: {
                 Authorization: `Token ${token}`
             }

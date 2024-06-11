@@ -19,6 +19,7 @@ type PresupuestoType = {
     vencimiento: string;
     moneda: string;
     observaciones: string;
+    remitido: boolean;
     producto: ProductoType | null;
 };
 
@@ -44,9 +45,13 @@ export const PresupuestoPage: React.FC<{}> = () => {
             width: 121,
             editable: false,
             renderCell: (params) => (
-                <Button variant="contained" color="warning" onClick={() => {
-                    navigate('/detalle_presupuesto', { state: { numeroPresupuesto: params.value } });
-                }}>
+                <Button 
+                    variant="contained" 
+                    color={params.row.remitido ? "info" : "warning"} 
+                    onClick={() => {
+                        navigate('/detalle_presupuesto', { state: { numeroPresupuesto: params.value } });
+                    }}
+                >
                     {params.value}
                 </Button>
             ),
@@ -93,20 +98,27 @@ export const PresupuestoPage: React.FC<{}> = () => {
     ];
     const [busqueda, setBusqueda] = useState('');
     const [busquedaTemporal, setBusquedaTemporal] = useState('');
-    const [fechaInicio, setFechaInicio] = useState('');
-    const [fechaFin, setFechaFin] = useState('');
     const { getSuccess, getError } = useNotification();
     const navigate = useNavigate();
+    const [soloRemitidos, setSoloRemitidos] = useState(false);
+    const now = new Date();
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+
+    const [fechaInicio, setFechaInicio] = useState(startOfMonth);
+    const [fechaFin, setFechaFin] = useState(endOfMonth);
 
     const [idPresupuestoAEliminar, setIdPresupuestoAEliminar] = useState('');
 
     const cargarPresupuestos = async () => {
         try {
-            const fechaInicioFormateada = fechaInicio ? `${(new Date(fechaInicio).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaInicio).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaInicio).getFullYear()}` : '';
-            const fechaFinFormateada = fechaFin ? `${(new Date(fechaFin).getDate() + 1).toString().padStart(2, '0')}-${(new Date(fechaFin).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaFin).getFullYear()}` : '';
+            const fechaInicioFormateada = fechaInicio ? `${(new Date(fechaInicio).getDate()).toString().padStart(2, '0')}-${(new Date(fechaInicio).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaInicio).getFullYear()}` : '';
+            const fechaFinFormateada = fechaFin ? `${(new Date(fechaFin).getDate()).toString().padStart(2, '0')}-${(new Date(fechaFin).getMonth() + 1).toString().padStart(2, '0')}-${new Date(fechaFin).getFullYear()}` : '';
 
-            const data = await getPresupuestos(busqueda, fechaInicioFormateada, fechaFinFormateada);
+            const data = await getPresupuestos(busqueda, fechaInicioFormateada, fechaFinFormateada, soloRemitidos);
             setPresupuestos(data);
+            console.log(data);
             if (data.length === 0) {
                 getError('No existe coincidencia con la búsqueda: ' + busqueda);
             }
@@ -138,8 +150,7 @@ export const PresupuestoPage: React.FC<{}> = () => {
 
     useEffect(() => {
         cargarPresupuestos();
-    }, [busqueda, fechaInicio, fechaFin]);
-
+    }, [busqueda, fechaInicio, fechaFin, soloRemitidos]);
 
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
@@ -180,7 +191,16 @@ export const PresupuestoPage: React.FC<{}> = () => {
                     />
                 </Stack>
                 <Stack direction="row" spacing={0}>
-                    <FormControlLabel control={<Switch color="info" />} label="Solo mostrar presupuestos remitidos" />
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                color="info"
+                                checked={soloRemitidos}
+                                onChange={(event) => setSoloRemitidos(event.target.checked)}
+                            />
+                        }
+                        label="Solo mostrar presupuestos remitidos"
+                    />
                 </Stack>
                 <Stack direction="row" spacing={2}>
                     <TextField
@@ -233,6 +253,12 @@ export const PresupuestoPage: React.FC<{}> = () => {
                     pageSizeOptions={[20]}
                     disableRowSelectionOnClick
                     disableColumnResize
+                    sortModel={[
+                        {
+                            field: 'numero_presupuesto',
+                            sort: 'desc',
+                        },
+                    ]}
                 />
             </Paper>
         </Container>

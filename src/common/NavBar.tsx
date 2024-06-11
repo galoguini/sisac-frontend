@@ -1,12 +1,30 @@
-import { AppBar, Box, Button, Container, Grid, Menu, MenuItem, Stack, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Container, Grid, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { checkAuth, logout } from '../api/usuarios';
+import { checkAuth, getUser, logout } from '../api/usuarios';
 import { useNotification } from "../context/notification.context";
 import { Home } from "@mui/icons-material";
 
+interface UserData {
+    username: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    celular: string;
+}
+
 export const NavBar: React.FC<{}> = () => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [userData, setUserData] = useState<UserData | null>(null);
+
+    const fetchData = async () => {
+        try {
+            const data = await getUser();
+            setUserData(data);
+        } catch (error: any) {
+            getError('Hubo un error al cargar los datos del usuario');
+        }
+    }
 
     const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -23,6 +41,9 @@ export const NavBar: React.FC<{}> = () => {
     useEffect(() => {
         const authStatus = checkAuth();
         setIsAuthenticated(authStatus);
+        if (authStatus) {
+            fetchData();
+        }
     }, []);
 
     const handleLogout = async () => {
@@ -79,7 +100,7 @@ export const NavBar: React.FC<{}> = () => {
                                     ) : (
                                         <>
                                             <Button variant="outlined" size="large" onClick={() => navigate("empresa1")}>Mi Empresa</Button>
-                                            <Button variant="outlined" size="large" onClick={() => navigate("perfil")}>Mi Perfil</Button>
+                                            <Button variant="outlined" size="large" onClick={() => navigate("perfil")}>{userData?.first_name} {userData?.last_name}</Button>
                                             <Button variant="contained" size="small" color="error" onClick={handleLogout}>Logout</Button>
                                         </>
                                     )}

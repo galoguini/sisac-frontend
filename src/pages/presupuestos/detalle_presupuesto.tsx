@@ -1,7 +1,7 @@
 import { Button, Container, Dialog, DialogActions, DialogContent, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getDetallePresupuesto } from "../../api/presupuestos";
+import { getDetallePresupuesto, remitirPresupuesto } from "../../api/presupuestos";
 import { PDFViewer } from "@react-pdf/renderer";
 import PresupuestoPDF from "../../components/presupuesto_pdf";
 import RemitoPDF from "../../components/remito_pdf";
@@ -24,6 +24,7 @@ type Presupuesto = {
     vencimiento: string;
     moneda: string;
     observaciones: string;
+    remitido: boolean;
     productos: Producto[];
 };
 
@@ -52,6 +53,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         vencimiento: "",
         moneda: "",
         observaciones: "",
+        remitido: false,
         productos: [],
     });
     const [empresa, setEmpresa] = useState({
@@ -80,6 +82,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
 
     const detallePresupuesto = async () => {
         const data = await getDetallePresupuesto(numeroPresupuesto);
+        console.log(data);
         setPresupuesto(data);
     }
 
@@ -136,6 +139,14 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         cliente: cliente,
     };
 
+    const handleRemitir = async () => {
+        const confirmacion = window.confirm(`Estás por remitir el presupuesto nro ${numeroPresupuesto}, ¿estás seguro?`);
+        if (confirmacion) {
+            await remitirPresupuesto(presupuesto.id);
+            detallePresupuesto();
+        }
+    };
+
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', flexDirection: 'column' }}>
@@ -179,12 +190,20 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                         <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar presupuesto por email</Button>
                     </Stack>
                     <Stack direction="row" spacing={2}>
-                        <Button variant="contained" color="primary" onClick={handleClickOpenRemito}>Imprmir remito</Button>
-                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar remito por email</Button>
+                        {presupuesto.remitido ? (
+                            <>
+                                <Button variant="contained" color="primary" onClick={handleClickOpenRemito}>Imprmir remito</Button>
+                                <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar remito por email</Button>
+                            </>
+                        ) : (
+                            <Button variant="contained" color="primary" onClick={handleRemitir}>
+                                Remitir
+                            </Button>
+                        )}
                     </Stack>
                 </Grid>
             </Paper>
-            
+
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
                 <DialogContent>
                     <PDFViewer style={{ width: '100%', height: '80vh' }}>

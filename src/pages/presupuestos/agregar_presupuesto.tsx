@@ -61,6 +61,7 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
     const [clientes, setClientes] = useState<ClienteType[]>([]);
     const [productos, setProductos] = useState<ProductosType[]>([]);
     const [valorDolar, setValorDolar] = useState<number>(0);
+    const today = new Date().toISOString().split('T')[0];
 
     const valorDolarTarjeta = async () => {
         const dolarTarjeta = await getDolarTarjeta();
@@ -88,8 +89,8 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
     const formik = useFormik({
         initialValues: {
             cliente: null,
-            fecha: '',
-            vencimiento: '',
+            fecha: today,
+            vencimiento: today,
             moneda: '',
             observaciones: '',
             productos: [

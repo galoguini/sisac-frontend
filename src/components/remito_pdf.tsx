@@ -7,6 +7,7 @@ const subtitulo = 16;
 const texto = 10;
 const header_tabla = 8;
 const contenido_tabla = 8;
+const seccion = 6;
 const columnas_articulo = '40%';
 const columnas_observacion = '40%';
 const columnas_cantidad = '20%';
@@ -252,15 +253,15 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                 </View>
             </View>
             <View style={styles.section}>
-                <Text>Sr. (es): {data.cliente.nombre_apellido}</Text>
-                <Text>
+                <Text style={{ marginBottom: seccion }}>Sr. (es): {data.cliente.nombre_apellido}</Text>
+                <Text style={{ marginBottom: seccion }}>
                     Domicilio: {data.cliente.domicilio && `${data.cliente.domicilio}, `}
                     {data.cliente.localidad && `${data.cliente.localidad}, `}
                     {data.cliente.provincia && `${data.cliente.provincia}, `}
                     {data.cliente.pais}
                 </Text>
-                <Text>Identificación:
-                    {data.cliente.tipo_identificacion === 'NO ESPECIFICADO'
+                <Text style={{ marginBottom: seccion }}>
+                    Identificación: {data.cliente.tipo_identificacion === 'NO ESPECIFICADO'
                         ? 'NO ESPECIFICADO'
                         : data.cliente.tipo_identificacion === 'OTRO'
                             ? `${data.cliente.otro_identificacion}: ${data.cliente.numero_identificacion}`
