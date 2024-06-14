@@ -2,7 +2,8 @@ import { Button, Container, Dialog, DialogActions, DialogContent, Grid, Paper, S
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getDetallePresupuesto, remitirPresupuesto } from "../../api/presupuestos";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer, BlobProvider } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 import PresupuestoPDF from "../../components/presupuesto_pdf";
 import RemitoPDF from "../../components/remito_pdf";
 import { getEmpresa } from "../../api/empresa";
@@ -71,6 +72,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         telefono: "",
         email: "",
         CBU: "",
+        logo: "",
     });
 
     const obtenerInfoPDF = async () => {
@@ -206,7 +208,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
 
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
                 <DialogContent>
-                    <PDFViewer style={{ width: '100%', height: '80vh' }}>
+                    <PDFViewer style={{ width: '100%', height: '80vh' }} showToolbar={true}>
                         <PresupuestoPDF data={data} />
                     </PDFViewer>
                 </DialogContent>
@@ -214,12 +216,33 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                     <Button onClick={handleClose} variant="contained" color="error">
                         Salir
                     </Button>
+                    <BlobProvider document={<PresupuestoPDF data={data} />}>
+                        {({ blob, loading }) =>
+                            loading ? (
+                                <Button variant="contained" color="primary" disabled>
+                                    Generando PDF...
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => {
+                                        if (blob) {
+                                            saveAs(blob, `presupuesto_${numeroPresupuesto}.pdf`);
+                                        }
+                                    }}
+                                >
+                                    Descargar PDF
+                                </Button>
+                            )
+                        }
+                    </BlobProvider>
                 </DialogActions>
             </Dialog>
 
             <Dialog open={openRemito} onClose={handleCloseRemito} fullWidth maxWidth="xl">
                 <DialogContent>
-                    <PDFViewer style={{ width: '100%', height: '80vh' }}>
+                    <PDFViewer style={{ width: '100%', height: '80vh' }} showToolbar={true}>
                         <RemitoPDF data={data} />
                     </PDFViewer>
                 </DialogContent>
@@ -227,6 +250,27 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                     <Button onClick={handleCloseRemito} variant="contained" color="error">
                         Salir
                     </Button>
+                    <BlobProvider document={<RemitoPDF data={data} />}>
+                        {({ blob, loading }) =>
+                            loading ? (
+                                <Button variant="contained" color="primary" disabled>
+                                    Generando PDF...
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() => {
+                                        if (blob) {
+                                            saveAs(blob, `remito_${numeroPresupuesto}.pdf`);
+                                        }
+                                    }}
+                                >
+                                    Descargar PDF
+                                </Button>
+                            )
+                        }
+                    </BlobProvider>
                 </DialogActions>
             </Dialog>
 

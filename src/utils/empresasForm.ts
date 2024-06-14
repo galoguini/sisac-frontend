@@ -14,4 +14,17 @@ export const EmpresaValidate = Yup.object().shape({
     telefono: Yup.string().trim().required("El telefono es requerido").matches(/^[0-9]+$/, "Introduzca un telefono valido").min(12, "Introzca un telefono valido, con codigo de area"),
     email: Yup.string().trim().email("Introduzca un email valido").required("El email es requerido"),
     CBU: Yup.string().trim().matches(/^[0-9]+$/, "El CBU solo puede contener números").min(22, "Introduzca un CBU valido").max(22, "Introduzca un CBU valido"),
+    logo: Yup.mixed().test("fileSize", "El archivo es muy grande", (value: any) => {
+        if (value) {
+            let file = value as File;
+            return file.size <= 2000000;
+        }
+        return true;
+    }).test("fileType", "Solo se permiten archivos de tipo imagen", (value: any) => {
+        if (value) {
+            let file = value as File;
+            return file.type.includes("image/");
+        }
+        return true;
+    })
 })

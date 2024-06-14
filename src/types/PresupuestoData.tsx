@@ -10,6 +10,7 @@ export interface Empresa {
     direccion: string;
     provincia: string;
     localidad: string;
+    logo: string;
 }
 
 export interface Cliente {

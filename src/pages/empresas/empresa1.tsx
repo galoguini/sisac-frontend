@@ -1,4 +1,4 @@
-import { Container, Paper, TextField, Typography } from "@mui/material";
+import { Box, Container, Paper, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getEmpresa } from "../../api/empresa";
 
@@ -18,12 +18,13 @@ export const Empresa1Page: React.FC<{}> = () => {
         telefono: "",
         email: "",
         CBU: "",
+        logo: "",
     });
 
     const obtenerEmpresa = async () => {
         const response = await getEmpresa();
         setEmpresa(response);
-    }
+    };
 
     useEffect(() => {
         obtenerEmpresa();
@@ -47,7 +48,15 @@ export const Empresa1Page: React.FC<{}> = () => {
                 <TextField fullWidth margin="normal" label="Teléfono" value={empresa.telefono} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="Email" value={empresa.email} InputProps={{ readOnly: true }} />
                 <TextField fullWidth margin="normal" label="CBU" value={empresa.CBU} InputProps={{ readOnly: true }} />
+                {empresa.logo && (
+                    <Box
+                        component="img"
+                        sx={{ maxWidth: '100%', objectFit: 'cover', mt: 2 }}
+                        alt="Logo de la empresa"
+                        src={empresa.logo}
+                    />
+                )}
             </Paper>
         </Container>
     );
-}
+};

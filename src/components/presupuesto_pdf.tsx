@@ -1,8 +1,8 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { PresupuestoData } from '../types/PresupuestoData';
 
-const titulo = 18;
+const titulo = 16;
 const subtitulo = 16;
 const texto = 10;
 const header_tabla = 8;
@@ -227,6 +227,13 @@ const styles = StyleSheet.create({
     empresaDireccion: {
         textAlign: 'left',
     },
+    clienteDatos: {
+        textAlign: 'left',
+        marginTop: 0,
+    },
+    logo: {
+        marginBottom: 1,
+    },
 });
 
 interface Props {
@@ -234,11 +241,14 @@ interface Props {
 }
 
 const PlantillaPDF: React.FC<Props> = ({ data }) => (
-    console.log(data),
     <Document>
         <Page size="A4" style={styles.page}>
             <View style={styles.header}>
                 <View style={styles.headerLeft}>
+                    <Image
+                        style={styles.logo}
+                        src={data.empresa.logo}
+                    />
                     <Text style={styles.title}>{data.empresa.nombre_empresa}</Text>
                     <View style={styles.empresaDireccion}>
                         <Text style={{ fontSize: 8 }}>
@@ -278,22 +288,32 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                 </View>
             </View>
             <View style={styles.section}>
-                <Text style={{ marginBottom: seccion }}>Sr. (es): {data.cliente.nombre_apellido}</Text>
-                <Text style={{ marginBottom: seccion }}>
-                    Domicilio: {data.cliente.domicilio && `${data.cliente.domicilio}, `}
-                    {data.cliente.localidad && `${data.cliente.localidad}, `}
-                    {data.cliente.provincia && `${data.cliente.provincia}, `}
-                    {data.cliente.pais}
-                </Text>
-                <Text style={{ marginBottom: seccion }}>
-                    Identificación: {data.cliente.tipo_identificacion === 'NO ESPECIFICADO'
-                        ? 'NO ESPECIFICADO'
-                        : data.cliente.tipo_identificacion === 'OTRO'
-                            ? `${data.cliente.otro_identificacion}: ${data.cliente.numero_identificacion}`
-                            : `${data.cliente.tipo_identificacion}: ${data.cliente.numero_identificacion}`
-                    }
-                </Text>
-                <Text>Cond. IVA: {data.cliente.condicion_iva}</Text>
+                <View style={[styles.clienteDatos, { flexDirection: 'row', justifyContent: 'flex-start' }]}>
+                    <View style={{ marginRight: 20 }}>
+                        <Text style={{ marginBottom: seccion }}>Sr. (es):</Text>
+                        <Text style={{ marginBottom: seccion }}>Domicilio:</Text>
+                        <Text style={{ marginBottom: seccion }}>Identificación:</Text>
+                        <Text>Cond. IVA:</Text>
+                    </View>
+                    <View>
+                        <Text style={{ marginBottom: seccion }}>{data.cliente.nombre_apellido}</Text>
+                        <Text style={{ marginBottom: seccion }}>
+                            {data.cliente.domicilio && `${data.cliente.domicilio}, `}
+                            {data.cliente.localidad && `${data.cliente.localidad}, `}
+                            {data.cliente.provincia && `${data.cliente.provincia}, `}
+                            {data.cliente.pais}
+                        </Text>
+                        <Text style={{ marginBottom: seccion }}>
+                            {data.cliente.tipo_identificacion === 'NO ESPECIFICADO'
+                                ? 'NO ESPECIFICADO'
+                                : data.cliente.tipo_identificacion === 'OTRO'
+                                    ? `${data.cliente.otro_identificacion}: ${data.cliente.numero_identificacion}`
+                                    : `${data.cliente.tipo_identificacion}: ${data.cliente.numero_identificacion}`
+                            }
+                        </Text>
+                        <Text>{data.cliente.condicion_iva}</Text>
+                    </View>
+                </View>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text>Moneda: {data.moneda}</Text>

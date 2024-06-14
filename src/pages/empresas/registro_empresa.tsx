@@ -21,6 +21,7 @@ type EmpresaType = {
     telefono: string;
     email: string;
     CBU: string;
+    logo: File;
 };
 
 export const RegistroEmpresaPage: React.FC<{}> = () => {
@@ -56,14 +57,15 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
             telefono: '',
             email: '',
             CBU: '',
+            logo: new File([], ''),
         },
         validationSchema: EmpresaValidate,
         onSubmit: async (values: EmpresaType) => {
             try {
                 const fecha = new Date(values.fecha_inicio_actividad);
-                const fechaInicioActividadFormateada = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth()+1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
-        
-                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.pais, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU);
+                const fechaInicioActividadFormateada = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getFullYear()}`;
+
+                await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.pais, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU, values.logo);
                 getSuccess("Empresa agregada exitosamente");
                 await seleccionarEmpresa();
                 navigate('/');
@@ -106,7 +108,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                                 error={formik.touched.nombre_fantasia && Boolean(formik.errors.nombre_fantasia)}
                                 helperText={formik.touched.nombre_fantasia && formik.errors.nombre_fantasia}
                             />
-                            <Box sx={{ mt: 2}}>
+                            <Box sx={{ mt: 2 }}>
                                 <FormControl fullWidth>
                                     <InputLabel id="categoria-fiscal-label">Categoría Fiscal</InputLabel>
                                     <Select
@@ -268,6 +270,19 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.CBU && Boolean(formik.errors.CBU)}
                                 helperText={formik.touched.CBU && formik.errors.CBU}
+                            />
+                            <TextField
+                                margin="normal"
+                                type="file"
+                                fullWidth
+                                label="Logo"
+                                onChange={(event) => {
+                                    const target = event.target as HTMLInputElement;
+                                    const file = target.files ? target.files[0] : null;
+                                    formik.setFieldValue('logo', file);
+                                }}
+                                error={formik.touched.logo && Boolean(formik.errors.logo)}
+                                helperText={formik.touched.logo && formik.errors.logo ? formik.errors.logo.toString() : ''}
                             />
                             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1, fontSize: '20px' }} >Agregar Empresa</Button>
                         </Box>

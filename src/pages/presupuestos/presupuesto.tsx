@@ -118,7 +118,6 @@ export const PresupuestoPage: React.FC<{}> = () => {
 
             const data = await getPresupuestos(busqueda, fechaInicioFormateada, fechaFinFormateada, soloRemitidos);
             setPresupuestos(data);
-            console.log(data);
             if (data.length === 0) {
                 getError('No existe coincidencia con la búsqueda: ' + busqueda);
             }
