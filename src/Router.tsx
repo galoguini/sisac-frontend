@@ -16,6 +16,7 @@ import { AgregarClientesPage } from "./pages/clientes/agregar_clientes";
 import { AgregarPresupuestoPage } from "./pages/presupuestos/agregar_presupuesto";
 import { DetallePresupuestoPage } from "./pages/presupuestos/detalle_presupuesto";
 import { Empresa1Page } from "./pages/empresas/empresa1";
+import { GoogleAuthPage } from "./pages/usuarios/google_auth";
 
 export const AppRouter: React.FC<{}> = () => {
     return (
@@ -38,6 +39,7 @@ export const AppRouter: React.FC<{}> = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegistroPage />} />
             <Route path="/registro_empresa" element={<RegistroEmpresaPage />} />
+            <Route path="/conectar_con_google" element={<GoogleAuthPage />} />
         </Routes>
     );
 }

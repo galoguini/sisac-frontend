@@ -68,7 +68,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
                 await agregarEmpresa(values.nombre_empresa, values.nombre_fantasia, values.categoria_fiscal, values.tipo_cuenta, values.cuit, values.nro_ingresos_brutos, fechaInicioActividadFormateada, values.pais, values.direccion, values.provincia, values.localidad, values.telefono, values.email, values.CBU, values.logo);
                 getSuccess("Empresa agregada exitosamente");
                 await seleccionarEmpresa();
-                navigate('/');
+                navigate('/conectar_con_google');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {
                     getError('No se está pudiendo establecer conexión');
