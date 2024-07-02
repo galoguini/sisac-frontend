@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Container, Grid, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Container, Grid, Menu, MenuItem, Stack, Toolbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkAuth, getUser, logout } from '../api/usuarios';

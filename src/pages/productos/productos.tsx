@@ -129,14 +129,6 @@ export const ProductoPage: React.FC<{}> = () => {
     return (
         <Container sx={{ mt: 9 }} maxWidth="xl">
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between' }}>
-                {/* <Stack direction="row" spacing={2}>
-                    <TextField
-                        label="Buscar producto"
-                        variant="outlined"
-                        value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                    />
-                </Stack> */}
                 <Stack direction="row" spacing={0}>
                     <TextField
                         label="Buscar producto"

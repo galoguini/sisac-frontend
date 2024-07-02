@@ -9,8 +9,6 @@ import { RegistroEmpresaPage } from "./pages/empresas/registro_empresa";
 import { PresupuestoPage } from "./pages/presupuestos/presupuesto";
 import { ClientePage } from "./pages/clientes/clientes";
 import { ProductoPage } from "./pages/productos/productos";
-import { EmpresaPage } from "./pages/empresas/empresa";
-import { EmpresaProvisionalPage } from "./pages/empresas/empresa provisional";
 import { AgregarProductoPage } from "./pages/productos/agregar_productos";
 import { AgregarClientesPage } from "./pages/clientes/agregar_clientes";
 import { AgregarPresupuestoPage } from "./pages/presupuestos/agregar_presupuesto";
@@ -33,8 +31,6 @@ export const AppRouter: React.FC<{}> = () => {
                 <Route path="/detalle_presupuesto" element={<DetallePresupuestoPage />} />
 
                 <Route path="/empresa1" element={<Empresa1Page />} />
-                <Route path="/empresa_provisional" element={<EmpresaProvisionalPage />} />
-                <Route path="/empresa" element={<EmpresaPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegistroPage />} />

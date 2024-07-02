@@ -4,6 +4,7 @@ import { Container, Typography, Box, Paper, TextField, Switch, Button, FormGroup
 import { useNotification } from "../../context/notification.context";
 import { useFormik } from "formik";
 import { EditarUsuarioValidate } from "../../utils/usuariosForm";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
     username: string;
@@ -24,6 +25,7 @@ export const PerfilPage: React.FC<{}> = () => {
     const { getSuccess, getError } = useNotification();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [isEditable, setIsEditable] = useState(false);
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         try {
@@ -166,6 +168,15 @@ export const PerfilPage: React.FC<{}> = () => {
                                     </Box>
                                 )}
                             </Box>
+                            <Button
+                                variant="contained"
+                                onClick={() => navigate('/conectar_con_google')}
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                color="info"
+                            >
+                                Conectar con Google
+                            </Button>
                         </Paper>
                     </Grid>
                 </Grid>

@@ -8,14 +8,7 @@ type ThemeProps = {
 enum themePalette {
     BG = '#053545',
     CRUNCHY = '#f47521',
-    // BG = '#f47521',
-    // CRUNCHY = '#053545',
     FONT_GLOBAL = 'Roboto',
-    // alertas (fijate si lo usas)
-    // FONT_COLOR = "#000000",
-    // BG_ALERT = "#ffffff",
-    // ERROR_MAIN = "#f44336",
-    // BG_ERROR_MAIN = "rgba(244,67,54,0.1)"
 }
 
 const theme = createTheme({

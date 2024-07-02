@@ -167,12 +167,6 @@ export const PresupuestoPage: React.FC<{}> = () => {
                 </Stack>
             </Paper>
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em", display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-                {/* <TextField
-                    label="Buscar presupuesto"
-                    variant="outlined"
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                /> */}
                 <Stack direction="row" spacing={0}>
                     <TextField
                         label="Buscar presupuesto"

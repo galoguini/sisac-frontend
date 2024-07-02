@@ -9,6 +9,9 @@ import RemitoPDF from "../../components/remito_pdf";
 import { getEmpresa } from "../../api/empresa";
 import { getClientes } from "../../api/clientes";
 import { PresupuestoData } from "../../types/PresupuestoData";
+import { enviarEmail } from "../../api/usuarios";
+import EmailDialog from "../../components/enviar_email";
+import { EmailDetails } from "../../types/EmailData";
 
 type Producto = {
     producto: string;
@@ -84,9 +87,45 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
 
     const detallePresupuesto = async () => {
         const data = await getDetallePresupuesto(numeroPresupuesto);
-        console.log(data);
         setPresupuesto(data);
     }
+
+    ////////////
+
+    const [emailDetails, setEmailDetails] = useState({
+        destinatario: "",
+        asunto: "",
+        mensaje: "",
+    });
+
+    const [isSendingPresupuesto, setIsSendingPresupuesto] = useState(false);
+    const [openEmailDialog, setOpenEmailDialog] = useState(false);
+
+    const handleOpenEmailDialog = (isPresupuesto: boolean) => {
+        setEmailDetails({
+            destinatario: cliente.email,
+            asunto: isPresupuesto ? `Presupuesto ${numeroPresupuesto}` : `Remito ${numeroPresupuesto}`,
+            mensaje: "",
+        });
+        setIsSendingPresupuesto(isPresupuesto);
+        setOpenEmailDialog(true);
+    };
+
+    const handleCloseEmailDialog = () => {
+        setOpenEmailDialog(false);
+    };
+
+    const handleSendEmail = async (details: EmailDetails, blob: Blob): Promise<void> => {
+        try {
+            await enviarEmail(details, blob);
+        } catch (error) {
+            console.error("Error enviando correo: (detalle_presupuesto)", error);
+        } finally {
+            handleCloseEmailDialog();
+        }
+    };
+
+    ////////////
 
     useEffect(() => {
         detallePresupuesto();
@@ -188,14 +227,12 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                 </Grid>
                 <Grid container direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
                     <Stack direction="row" spacing={2}>
-                        <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleClickOpen}>Imprimir presupuesto</Button>
-                        <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar presupuesto por email</Button>
+                        <Button variant="contained" color="success" sx={{ mt: 2 }} onClick={handleClickOpen}>Imprimir presupuesto</Button>
                     </Stack>
                     <Stack direction="row" spacing={2}>
                         {presupuesto.remitido ? (
                             <>
-                                <Button variant="contained" color="primary" onClick={handleClickOpenRemito}>Imprmir remito</Button>
-                                <Button disabled variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => window.print()}>Enviar remito por email</Button>
+                                <Button variant="contained" color="success" onClick={handleClickOpenRemito}>Imprimir remito</Button>
                             </>
                         ) : (
                             <Button variant="contained" color="primary" onClick={handleRemitir}>
@@ -205,6 +242,16 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                     </Stack>
                 </Grid>
             </Paper>
+
+            <EmailDialog
+                open={openEmailDialog}
+                handleClose={handleCloseEmailDialog}
+                isSendingPresupuesto={isSendingPresupuesto}
+                data={data}
+                emailDetails={emailDetails}
+                setEmailDetails={setEmailDetails}
+                enviarEmail={handleSendEmail}
+            />
 
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
                 <DialogContent>
@@ -223,17 +270,26 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                                     Generando PDF...
                                 </Button>
                             ) : (
-                                <Button
-                                    variant="contained"
-                                    color="success"
-                                    onClick={() => {
-                                        if (blob) {
-                                            saveAs(blob, `presupuesto_${numeroPresupuesto}.pdf`);
-                                        }
-                                    }}
-                                >
-                                    Descargar PDF
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => {
+                                            if (blob) {
+                                                saveAs(blob, `presupuesto_${numeroPresupuesto}.pdf`);
+                                            }
+                                        }}
+                                    >
+                                        Descargar PDF
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="info"
+                                        onClick={() => handleOpenEmailDialog(true)}
+                                    >
+                                        Enviar por email
+                                    </Button>
+                                </>
                             )
                         }
                     </BlobProvider>
@@ -257,17 +313,26 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
                                     Generando PDF...
                                 </Button>
                             ) : (
-                                <Button
-                                    variant="contained"
-                                    color="success"
-                                    onClick={() => {
-                                        if (blob) {
-                                            saveAs(blob, `remito_${numeroPresupuesto}.pdf`);
-                                        }
-                                    }}
-                                >
-                                    Descargar PDF
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="success"
+                                        onClick={() => {
+                                            if (blob) {
+                                                saveAs(blob, `remito_${numeroPresupuesto}.pdf`);
+                                            }
+                                        }}
+                                    >
+                                        Descargar PDF
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="info"
+                                        onClick={() => handleOpenEmailDialog(false)}
+                                    >
+                                        Enviar por email
+                                    </Button>
+                                </>
                             )
                         }
                     </BlobProvider>
@@ -305,4 +370,4 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
             ))}
         </Container>
     );
-}
+};
