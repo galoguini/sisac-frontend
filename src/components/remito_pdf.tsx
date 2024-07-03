@@ -254,7 +254,9 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
                             <Text>
                                 {data.empresa.cuit.slice(0, 2) + '-' + data.empresa.cuit.slice(2, 10) + '-' + data.empresa.cuit.slice(10)}
                             </Text>
-                            <Text>{data.empresa.nro_ingresos_brutos}</Text>
+                            <Text>
+                                {data.empresa.nro_ingresos_brutos.slice(0, 2) + '-' + data.empresa.nro_ingresos_brutos.slice(2, 10) + '-' + data.empresa.nro_ingresos_brutos.slice(10)}
+                            </Text>
                             <Text>{data.empresa.fecha_inicio_actividad.replace(/-/g, '/')}</Text>
                         </View>
                     </View>

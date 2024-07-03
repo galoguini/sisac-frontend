@@ -26,6 +26,7 @@ type EmpresaType = {
 
 export const RegistroEmpresaPage: React.FC<{}> = () => {
     const navigate = useNavigate();
+    const today = new Date().toISOString().split('T')[0];
     const CATEGORIAS = [
         'Consumidor Final',
         'Exento',
@@ -49,7 +50,7 @@ export const RegistroEmpresaPage: React.FC<{}> = () => {
             tipo_cuenta: '',
             cuit: '',
             nro_ingresos_brutos: '',
-            fecha_inicio_actividad: '',
+            fecha_inicio_actividad: today,
             pais: '',
             direccion: '',
             provincia: '',
