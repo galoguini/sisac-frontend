@@ -245,10 +245,14 @@ const PlantillaPDF: React.FC<Props> = ({ data }) => (
         <Page size="A4" style={styles.page}>
             <View style={styles.header}>
                 <View style={styles.headerLeft}>
-                    <Image
-                        style={styles.logo}
-                        src={data.empresa.logo}
-                    />
+                    {data.empresa.logo ? (
+                        <Image
+                            style={styles.logo}
+                            src={data.empresa.logo}
+                        />
+                    ) : (
+                        <View style={{ height: 0 }} />
+                    )}
                     <Text style={styles.title}>{data.empresa.nombre_empresa}</Text>
                     <View style={styles.empresaDireccion}>
                         <Text style={{ fontSize: 8 }}>
