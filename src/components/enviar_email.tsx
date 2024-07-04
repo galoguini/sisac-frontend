@@ -23,14 +23,19 @@ const EmailDialog: React.FC<EmailDialogProps> = ({ open, handleClose, isSendingP
     };
 
     const handleSendEmail = async () => {
+        if (!emailDetails.destinatario.trim() || !emailDetails.asunto.trim() || !emailDetails.mensaje.trim()) {
+            getError("Todos los campos son obligatorios.");
+            return;
+        }
+    
         setLoading(true);
         getInfo("El email se está enviando, por favor espere...");
-
+    
         try {
             const blob = await generatePdfBlob();
             const fileName = isSendingPresupuesto ? `presupuesto_${data.numero}.pdf` : `remito_${data.numero}.pdf`;
             const file = new File([blob], fileName, { type: "application/pdf" });
-
+    
             await enviarEmail({
                 destinatario: emailDetails.destinatario,
                 asunto: emailDetails.asunto,
@@ -73,8 +78,8 @@ const EmailDialog: React.FC<EmailDialogProps> = ({ open, handleClose, isSendingP
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="error">Cancelar</Button>
-                <Button onClick={handleSendEmail} color="primary" disabled={loading}>Enviar</Button>
+                <Button variant="contained" onClick={handleClose} color="error">Cancelar</Button>
+                <Button variant="contained" onClick={handleSendEmail} color="success" disabled={loading}>Enviar</Button>
             </DialogActions>
         </Dialog>
     );

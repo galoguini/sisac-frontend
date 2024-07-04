@@ -105,7 +105,7 @@ export const DetallePresupuestoPage: React.FC<{}> = () => {
         setEmailDetails({
             destinatario: cliente.email,
             asunto: isPresupuesto ? `Presupuesto ${numeroPresupuesto}` : `Remito ${numeroPresupuesto}`,
-            mensaje: "",
+            mensaje: `Estimado/a ${cliente.nombre_apellido},\n\nAdjunto encontrará el ${isPresupuesto ? "presupuesto" : "remito"} solicitado.\n\nSaludos cordiales.`,
         });
         setIsSendingPresupuesto(isPresupuesto);
         setOpenEmailDialog(true);
