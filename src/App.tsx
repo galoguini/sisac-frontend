@@ -13,6 +13,7 @@ function App() {
     useEffect(() => {
         const authenticate = async () => {
             const authStatus = await checkAuth();
+            console.log('Auth status:', authStatus);
             setIsAuthenticated(authStatus);
             setIsLoading(false);
         };
