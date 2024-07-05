@@ -4,9 +4,11 @@ import Cookies from 'js-cookie';
 import { logout } from '../api/usuarios';
 
 const ActivityMonitor: React.FC = () => {
+    console.log('Componente ActivityMonitor montado'); 
     const navigate = useNavigate();
 
     const handleLogout = async () => {
+        console.log('Iniciando cierre de sesión');
         try {
             await logout();
             Cookies.remove('authToken');
@@ -18,15 +20,16 @@ const ActivityMonitor: React.FC = () => {
     };
 
     const startInactivityTimer = () => {
+        console.log('Iniciando temporizador de inactividad');
         const timerId = setTimeout(() => {
             const userResponse = window.confirm('Tu sesión se cerrará por inactividad en 10 minutos. ¿Deseas seguir conectado?');
             if (userResponse) {
                 clearTimeout(timerId);
                 startInactivityTimer();
             } else {
-                setTimeout(handleLogout, 30000);
+                setTimeout(handleLogout, 10000);
             }
-        }, 30000);
+        }, 20000);
         return timerId;
     };
 

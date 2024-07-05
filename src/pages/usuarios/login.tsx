@@ -13,7 +13,7 @@ type LoginType = {
 
 export const LoginPage: React.FC<{}> = () => {
     const navigate = useNavigate();
-    const { getError } = useNotification();
+    const { getSuccess, getError } = useNotification();
 
     useEffect(() => {
         const message = localStorage.getItem('logoutMessage');
@@ -32,6 +32,7 @@ export const LoginPage: React.FC<{}> = () => {
         onSubmit: async (values: LoginType) => {
             try {
                 await login(values.username, values.password);
+                getSuccess("Login exitoso");
                 navigate('/');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {
