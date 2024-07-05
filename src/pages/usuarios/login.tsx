@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Container, Grid, Paper, TextField, Typography, Link } from "@mui/material";
 import { useNotification } from "../../context/notification.context";
 import { LoginValidate } from "../../utils/usuariosForm";
@@ -14,6 +14,15 @@ type LoginType = {
 export const LoginPage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const { getSuccess, getError } = useNotification();
+
+    useEffect(() => {
+        const message = localStorage.getItem('logoutMessage');
+        if (message) {
+            window.alert(message);
+            localStorage.removeItem('logoutMessage');
+        }
+    }, []);
+
     const formik = useFormik<LoginType>({
         initialValues: {
             username: '',
