@@ -32,7 +32,6 @@ export const LoginPage: React.FC<{}> = () => {
         onSubmit: async (values: LoginType) => {
             try {
                 await login(values.username, values.password);
-                getSuccess("Login exitoso");
                 navigate('/');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {
