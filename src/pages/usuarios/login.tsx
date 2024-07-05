@@ -13,7 +13,7 @@ type LoginType = {
 
 export const LoginPage: React.FC<{}> = () => {
     const navigate = useNavigate();
-    const { getSuccess, getError } = useNotification();
+    const { getError } = useNotification();
 
     useEffect(() => {
         const message = localStorage.getItem('logoutMessage');
