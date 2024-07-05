@@ -25,7 +25,7 @@ export const GoogleAuthPage: React.FC<{}> = () => {
             <Paper sx={{ padding: "1.2em", borderRadius: "0.5em" }}>
                 <Typography sx={{ mb: 2 }} variant="h4" align="center">Enviar emails por Gmail</Typography>
                 <Typography variant="body1" align="left">
-                    SISAC puede enviar correos a su nombre,
+                    SEDOC puede enviar correos a su nombre,
                     pero para hacer esto, requerimos un correo electronico de Gmail y su contraseña para aplicaciones.
                 </Typography>
                 <Typography variant="body2" align="left" sx={{ mt: 2 }}>
@@ -56,7 +56,7 @@ export const GoogleAuthPage: React.FC<{}> = () => {
                     fullWidth
                     onClick={handleConnectGoogle}
                 >
-                    Conectar Gmail con SISAC
+                    Conectar Gmail con SEDOC
                 </Button>
                 <Button
                     sx={{ mt: 1 }}
