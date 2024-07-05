@@ -8,7 +8,6 @@ const WARNING_TIMEOUT = 20000;
 const FINAL_LOGOUT_TIMEOUT = 10000;
 
 const ActivityMonitor: React.FC = () => {
-    console.log('Componente ActivityMonitor montado');
     const navigate = useNavigate();
     const { performLogout } = useAuth();
     const { getWarning } = useNotification();
@@ -16,7 +15,6 @@ const ActivityMonitor: React.FC = () => {
     const finalLogoutTimerId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const handleLogout = async () => {
-        console.log('Iniciando cierre de sesión por inactividad');
         try {
             await logout();
             performLogout();
@@ -28,7 +26,6 @@ const ActivityMonitor: React.FC = () => {
     };
 
     const showWarning = () => {
-        console.log('Mostrando advertencia de cierre de sesión por inactividad');
         getWarning('Tu sesión se cerrará por inactividad en 10 minutos.');
     };
 
