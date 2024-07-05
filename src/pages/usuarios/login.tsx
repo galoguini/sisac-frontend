@@ -5,6 +5,7 @@ import { LoginValidate } from "../../utils/usuariosForm";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { login } from '../../api/usuarios';
+import { useAuth } from "../../context/auth.context";
 
 type LoginType = {
     username: string;
@@ -14,6 +15,7 @@ type LoginType = {
 export const LoginPage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const { getSuccess, getError } = useNotification();
+    const { setAuthenticated } = useAuth();
 
     useEffect(() => {
         const message = localStorage.getItem('logoutMessage');
@@ -33,6 +35,7 @@ export const LoginPage: React.FC<{}> = () => {
             try {
                 await login(values.username, values.password);
                 getSuccess("Login exitoso");
+                setAuthenticated();
                 navigate('/');
             } catch (error: any) {
                 if (error && error.message && error.message.includes('Network Error')) {
@@ -86,4 +89,4 @@ export const LoginPage: React.FC<{}> = () => {
             </Grid>
         </Container>
     );
-}
+};

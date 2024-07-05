@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { logout } from '../api/usuarios';
+import { useAuth } from '../context/auth.context';
 
 const ActivityMonitor: React.FC = () => {
     console.log('Componente ActivityMonitor montado'); 
     const navigate = useNavigate();
+    const { performLogout } = useAuth();
 
     const handleLogout = async () => {
         console.log('Iniciando cierre de sesión');
         try {
             await logout();
-            Cookies.remove('authToken');
+            performLogout();
             localStorage.setItem('logoutMessage', 'Sesión cerrada por inactividad');
             navigate('/login');
         } catch (error) {
