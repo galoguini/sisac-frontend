@@ -15,6 +15,7 @@ import { AgregarPresupuestoPage } from "./pages/presupuestos/agregar_presupuesto
 import { DetallePresupuestoPage } from "./pages/presupuestos/detalle_presupuesto";
 import { Empresa1Page } from "./pages/empresas/empresa1";
 import { GoogleAuthPage } from "./pages/usuarios/google_auth";
+import { NotFoundPage } from "./pages/not_found";
 
 export const AppRouter: React.FC<{}> = () => {
     return (
@@ -29,13 +30,13 @@ export const AppRouter: React.FC<{}> = () => {
                 <Route path="/agregar_cliente" element={<AgregarClientesPage />} />
                 <Route path="/agregar_presupuesto" element={<AgregarPresupuestoPage />} />
                 <Route path="/detalle_presupuesto" element={<DetallePresupuestoPage />} />
-
                 <Route path="/empresa1" element={<Empresa1Page />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registro" element={<RegistroPage />} />
             <Route path="/registro_empresa" element={<RegistroEmpresaPage />} />
             <Route path="/conectar_con_google" element={<GoogleAuthPage />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
-}
+};
