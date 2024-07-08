@@ -1,4 +1,3 @@
-# global options
 {
     admin off # no need for the admin api in railway's environment
     persist_config off # storage isn't persistent anyway
@@ -18,6 +17,6 @@
     respond /health 200
     root * dist
     encode gzip
-    file_server
     try_files {path} /index.html
+    file_server
 }
