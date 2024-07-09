@@ -1,0 +1,22 @@
+{
+    admin off # no need for the admin api in railway's environment
+    persist_config off # storage isn't persistent anyway
+    auto_https off # railway handles https for us
+    log {
+        format json # runtime log format to json
+    }
+    servers {
+        trusted_proxies static private_ranges # trust railway's proxy
+    }
+}
+
+:{$PORT} {
+    log {
+        format json # access log format to json
+    }
+    respond /health 200
+    root * dist
+    encode gzip
+    try_files {path} /index.html
+    file_server
+}
