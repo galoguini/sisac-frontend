@@ -1,9 +1,9 @@
-import { Button, Container, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNotification } from "../../context/notification.context";
 import { useNavigate } from "react-router-dom";
 import { eliminarCliente, getClientes } from "../../api/clientes";
-import { DataGrid, GridColDef, GridSearchIcon } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 type ClienteType = {
     nombre_apellido: string;
@@ -101,7 +101,6 @@ export const ClientePage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const [clientes, setClientes] = useState<ClienteType[]>([]);
     const [idClienteAEliminar, setIdClienteAEliminar] = useState('');
-    const [busquedaTemporal, setBusquedaTemporal] = useState('');
 
     const cargarClientes = async () => {
         try {
@@ -147,16 +146,8 @@ export const ClientePage: React.FC<{}> = () => {
                     <TextField
                         label="Buscar cliente"
                         variant="outlined"
-                        onChange={(e) => setBusquedaTemporal(e.target.value)}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setBusqueda(busquedaTemporal)}>
-                                        <GridSearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
                     />
                 </Stack>
                 <Button variant="contained" color="success" onClick={() => navigate("/agregar_cliente")}>Agregar cliente</Button>

@@ -347,13 +347,15 @@ export const AgregarPresupuestoPage: React.FC<{}> = () => {
 
                                 />
                                 <Stack direction="row" spacing={2} justifyContent="space-between">
-                                    <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>
-                                        *valor a pesos ya convertido
-                                    </Typography>
                                     {formik.values.moneda === 'ARS' && (
-                                        <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>
-                                            *valor venta del dolar tarjeta actual: {valorDolar}
-                                        </Typography>
+                                        <>
+                                            <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>
+                                                *valor a pesos ya convertido
+                                            </Typography>
+                                            <Typography sx={{ mb: 1, fontSize: '0.75rem', textAlign: 'right' }}>
+                                                **valor venta del dolar tarjeta actual: {valorDolar}
+                                            </Typography>
+                                        </>
                                     )}
                                 </Stack>
                                 <TextField

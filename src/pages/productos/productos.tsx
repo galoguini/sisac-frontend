@@ -1,5 +1,5 @@
-import { Button, Container, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridSearchIcon } from "@mui/x-data-grid";
+import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { eliminarProducto, getProductos } from "../../api/productos";
 import { useNavigate } from "react-router-dom";
@@ -88,7 +88,6 @@ export const ProductoPage: React.FC<{}> = () => {
     const navigate = useNavigate();
     const [productos, setProductos] = useState<ProductoType[]>([]);
     const [idProductoAEliminar, setIdProductoAEliminar] = useState('');
-    const [busquedaTemporal, setBusquedaTemporal] = useState('');
 
     const cargarProductos = async () => {
         try {
@@ -133,16 +132,8 @@ export const ProductoPage: React.FC<{}> = () => {
                     <TextField
                         label="Buscar producto"
                         variant="outlined"
-                        onChange={(e) => setBusquedaTemporal(e.target.value)}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={() => setBusqueda(busquedaTemporal)}>
-                                        <GridSearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
                     />
                 </Stack>
                 <Button variant="contained" color="success" onClick={() => navigate("/agregar_producto")}>Agregar producto</Button>

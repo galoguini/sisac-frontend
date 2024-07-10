@@ -4,8 +4,8 @@ import { logout } from '../api/usuarios';
 import { useAuth } from '../context/auth.context';
 import { useNotification } from '../context/notification.context';
 
-const WARNING_TIMEOUT = 20000;
-const FINAL_LOGOUT_TIMEOUT = 10000;
+const WARNING_TIMEOUT = 3000000;
+const FINAL_LOGOUT_TIMEOUT = 600000;
 
 const ActivityMonitor: React.FC = () => {
     const navigate = useNavigate();
